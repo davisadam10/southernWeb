@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-from forms import DelayRepayUserRegForm, LoginForm
+from forms import DelayRepayUserRegForm, LoginForm, JourneyForm
 
 
 def register_success(request):
@@ -45,7 +45,7 @@ def auth_view(request):
         password = request.POST.get('password', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
-            auth.login(request,user)
+            auth.login(request, user)
             return HttpResponseRedirect('/accounts/loggedin')
         else:
             return HttpResponseRedirect('/accounts/invalid')
@@ -54,10 +54,11 @@ def auth_view(request):
 
 
 def loggedin(request):
+    args = {}
     if request.user.is_authenticated():
-        return render_to_response('loggedin.html',
-            {'full_name': request.user.username}
-        )
+        args['form'] = JourneyForm()
+        #args['form'] = 'adam'
+        return render_to_response('loggedin.html', args)
     else:
         return HttpResponseRedirect('/accounts/login')
 

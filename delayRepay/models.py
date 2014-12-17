@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class UserData(User):
     title = models.CharField(max_length=4)
     forename = models.CharField(max_length=20)
@@ -12,5 +13,15 @@ class UserData(User):
     county = models.CharField(max_length=200)
     postcode = models.CharField(max_length=7)
     photocard_id = models.CharField(max_length=200)
+
+
+class Journey(models.Model):
+    departingStation = models.CharField(max_length=200)
+    arrivingStation = models.CharField(max_length=200)
+    date = models.DateField()
+    startTime = models.TimeField()
+    endTime = models.TimeField()
+
+
 
 

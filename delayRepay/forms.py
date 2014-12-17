@@ -1,5 +1,5 @@
 from django import forms
-from models import UserData
+from models import UserData, Journey
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
@@ -90,6 +90,55 @@ class LoginForm(forms.Form):
         Field('username', css_class='input-sm'),
         Field('password', css_class='input-sm'),
         Field('remember'),
-        FormActions(StrictButton('login', name="login", value="login", css_class="btn-primary")),
-        FormActions(StrictButton('register', name="register", value="register", css_class="btn-danger")),
+        FormActions(Submit('login',  value="login", css_class="btn-primary")),
+        FormActions(Submit('register', value="register", css_class="btn-danger")),
     )
+
+class JourneyForm(forms.ModelForm):
+    validStations = [
+        "Earlswood (Surrey)",
+        'Merstham',
+        'London Victoria',
+        'London Bridge',
+        'East Croydon'
+    ]
+
+    departingStation = forms.ChoiceField(choices=validStations, required=True)
+    arrivingStation = forms.ChoiceField(choices=validStations, required=True)
+    date = forms.DateField()
+    startTime = forms.TimeField()
+    endTime = forms.TimeField()
+
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.form_action = '/accounts/submit/'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-sm-4'
+    helper.field_class = 'col-sm-4'
+    helper.layout = Layout(
+        Field('departingStation', css_class='input-sm'),
+        Field('arrivingStation', css_class='input-sm'),
+        Field('date', css_class='input-sm'),
+        Field('startTime', css_class='input-sm'),
+        Field('endTime', css_class='input-sm'),
+    )
+
+    class Meta:
+        model = Journey
+
+        fields = ("departingStation", "arrivingStation",
+                  "date", "startTime",
+                  "endTime"
+        )
+
+    def save(self, commit=True):
+        journey = super(JourneyForm, self).save(commit=False)
+        journey.departingStation = self.cleaned_data['departingStation']
+        journey.arrivingStation = self.cleaned_data['arrivingStation']
+        journey.date = self.cleaned_data['date']
+        journey.startTime = self.cleaned_data['startTime']
+        journey.endTime = self.cleaned_data['endTime']
+        if commit:
+            journey.save()
+
+        return journey
