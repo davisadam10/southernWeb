@@ -4,6 +4,23 @@
         <title>{% block title %}My Base Template{% endblock %}</title>
         {% load staticfiles %}
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "css/jquery.ptTimeSelect.css" %}" />
+        <script type="text/javascript" src="{% static "js/jquery.ptTimeSelect.js" %}"></script>
+        <script>
+            $(function() {
+                $( "#datepicker" ).datepicker();
+            });
+        </script>
+        <script>
+            $(function() {
+                $( "#timepicker" ).ptTimeSelect();
+                $( "#timepicker2" ).ptTimeSelect();
+            });
+        </script>
     </head>
     <body>
         <div id="page">
@@ -19,8 +36,6 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     </body>
 </html>
 
