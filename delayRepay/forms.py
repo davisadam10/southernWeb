@@ -95,19 +95,19 @@ class LoginForm(forms.Form):
     )
 
 class JourneyForm(forms.ModelForm):
-    validStations = [
-        "Earlswood (Surrey)",
-        'Merstham',
-        'London Victoria',
-        'London Bridge',
-        'East Croydon'
-    ]
+    validStations = (
+        ("1", "Earlswood (Surrey)"),
+        ("2", "Merstham"),
+        ("3", "London Victoria"),
+        ("4", "London Bridge"),
+        ("5", "East Croydon"),
+    )
 
-    departingStation = forms.ChoiceField(choices=validStations, required=True)
-    arrivingStation = forms.ChoiceField(choices=validStations, required=True)
-    date = forms.DateField()
-    startTime = forms.TimeField()
-    endTime = forms.TimeField()
+    departing_station = forms.ChoiceField(choices=validStations, required=True)
+    arriving_station = forms.ChoiceField(choices=validStations, required=True)
+    journey_date = forms.DateField()
+    start_time = forms.TimeField()
+    end_time = forms.TimeField()
 
     helper = FormHelper()
     helper.form_method = 'POST'
@@ -116,28 +116,28 @@ class JourneyForm(forms.ModelForm):
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
-        Field('departingStation', css_class='input-sm'),
-        Field('arrivingStation', css_class='input-sm'),
-        Field('date', css_class='input-sm'),
-        Field('startTime', css_class='input-sm'),
-        Field('endTime', css_class='input-sm'),
+        Field('departing_station'),
+        Field('arriving_station'),
+        Field('journey_date', css_class='datepicker', id='datepicker'),
+        Field('start_time', css_class='input-sm', id='timepicker'),
+        Field('end_time', css_class='input-sm', id='timepicker2'),
     )
 
     class Meta:
         model = Journey
 
-        fields = ("departingStation", "arrivingStation",
-                  "date", "startTime",
-                  "endTime"
+        fields = ("departing_station", "arriving_station",
+                  "journey_date", "start_time",
+                  "end_time"
         )
 
     def save(self, commit=True):
         journey = super(JourneyForm, self).save(commit=False)
-        journey.departingStation = self.cleaned_data['departingStation']
-        journey.arrivingStation = self.cleaned_data['arrivingStation']
-        journey.date = self.cleaned_data['date']
-        journey.startTime = self.cleaned_data['startTime']
-        journey.endTime = self.cleaned_data['endTime']
+        journey.departingStation = self.cleaned_data['departing_station']
+        journey.arrivingStation = self.cleaned_data['arriving_station']
+        journey.date = self.cleaned_data['journey_date']
+        journey.startTime = self.cleaned_data['start_time']
+        journey.endTime = self.cleaned_data['end_time']
         if commit:
             journey.save()
 
