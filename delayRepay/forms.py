@@ -3,7 +3,7 @@ from models import UserData, Journey
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
-from crispy_forms.bootstrap import FormActions, StrictButton
+from crispy_forms.bootstrap import FormActions
 
 
 class DelayRepayUserRegForm(UserCreationForm):
