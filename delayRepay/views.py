@@ -55,9 +55,21 @@ def auth_view(request):
 
 def addJourney(request):
     args = {}
+    args.update(csrf(request))
     if request.user.is_authenticated():
-        args['form'] = delayRepayForms.JourneyForm()
-        return render_to_response('addJourney.html', args)
+        if request.method == 'POST':
+            form = delayRepayForms.JourneyForm(request.POST)
+            if form.is_valid():
+                #form.save()
+                print 'Should Be Saving'
+                return HttpResponseRedirect('/accounts/register_success')
+            else:
+                args['form'] = form
+                return render_to_response('addJourney.html', args)
+
+        else:
+            args['form'] = delayRepayForms.JourneyForm()
+            return render_to_response('addJourney.html', args)
     else:
         return HttpResponseRedirect('/accounts/login')
 
