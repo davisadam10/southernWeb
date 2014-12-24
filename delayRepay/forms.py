@@ -82,7 +82,7 @@ class LoginForm(forms.Form):
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/accounts/auth/'
+    helper.form_action = 'auth/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
@@ -112,7 +112,7 @@ class JourneyForm(forms.ModelForm):
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/accounts/addJourney/'
+    helper.form_action = '/addJourney/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
@@ -169,7 +169,7 @@ class TicketForm(forms.ModelForm):
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/accounts/submit/'
+    helper.form_action = '/submit/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'

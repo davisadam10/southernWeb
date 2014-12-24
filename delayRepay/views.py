@@ -18,7 +18,7 @@ def register_user(request):
         form = delayRepayForms.DelayRepayUserRegForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/accounts/register_success')
+            return HttpResponseRedirect('/register_success')
         else:
             args['form'] = form
             return render_to_response('register.html', args)
@@ -46,11 +46,11 @@ def auth_view(request):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return HttpResponseRedirect('/accounts/loggedin')
+            return HttpResponseRedirect('/loggedin')
         else:
-            return HttpResponseRedirect('/accounts/invalid')
+            return HttpResponseRedirect('/invalid')
     else:
-        return HttpResponseRedirect('/accounts/register')
+        return HttpResponseRedirect('/register')
 
 
 def addJourney(request):
@@ -62,7 +62,7 @@ def addJourney(request):
             if form.is_valid():
                 #form.save()
                 print 'Should Be Saving'
-                return HttpResponseRedirect('/accounts/register_success')
+                return HttpResponseRedirect('/register_success')
             else:
                 args['form'] = form
                 return render_to_response('addJourney.html', args)
@@ -71,7 +71,7 @@ def addJourney(request):
             args['form'] = delayRepayForms.JourneyForm()
             return render_to_response('addJourney.html', args)
     else:
-        return HttpResponseRedirect('/accounts/login')
+        return HttpResponseRedirect('/login')
 
 def addTicket(request):
     args = {}
@@ -79,7 +79,7 @@ def addTicket(request):
         args['form'] = delayRepayForms.TicketForm()
         return render_to_response('addTicket.html', args)
     else:
-        return HttpResponseRedirect('/accounts/login')
+        return HttpResponseRedirect('/login')
 
 def loggedin(request):
     args = {}
@@ -87,7 +87,7 @@ def loggedin(request):
         args['form'] = delayRepayForms.JourneyForm()
         return render_to_response('loggedin.html', args)
     else:
-        return HttpResponseRedirect('/accounts/login')
+        return HttpResponseRedirect('/login')
 
 def invalid_login(request):
     return render_to_response('invalid_login.html')
