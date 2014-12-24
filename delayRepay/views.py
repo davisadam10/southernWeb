@@ -46,7 +46,7 @@ def auth_view(request):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return HttpResponseRedirect('/loggedin')
+            return HttpResponseRedirect('/logged_in')
         else:
             return HttpResponseRedirect('/invalid')
     else:
@@ -81,11 +81,11 @@ def addTicket(request):
     else:
         return HttpResponseRedirect('/login')
 
-def loggedin(request):
+def logged_in(request):
     args = {}
     if request.user.is_authenticated():
         args['form'] = delayRepayForms.JourneyForm()
-        return render_to_response('loggedin.html', args)
+        return render_to_response('logged_in.html', args)
     else:
         return HttpResponseRedirect('/login')
 

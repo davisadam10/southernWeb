@@ -82,7 +82,7 @@ class LoginForm(forms.Form):
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = 'auth/'
+    helper.form_action = '/auth/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
