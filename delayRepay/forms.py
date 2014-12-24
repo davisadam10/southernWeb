@@ -109,9 +109,10 @@ class JourneyForm(forms.ModelForm):
     start_time = forms.TimeField()
     end_time = forms.TimeField()
 
+
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/accounts/submit/'
+    helper.form_action = '/accounts/addJourney/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
@@ -121,6 +122,7 @@ class JourneyForm(forms.ModelForm):
         Field('journey_date', css_class='datepicker', id='datepicker'),
         Field('start_time', css_class='input-sm', id='timepicker'),
         Field('end_time', css_class='input-sm', id='timepicker2'),
+        FormActions(Submit('Add Journey', 'Add Journey', css_class='btn-primary'))
     )
 
     class Meta:
@@ -139,9 +141,20 @@ class JourneyForm(forms.ModelForm):
         journey.startTime = self.cleaned_data['start_time']
         journey.endTime = self.cleaned_data['end_time']
         if commit:
-            journey.save()
+            pass
+            #journey.save()
 
         return journey
+
+    def clean(self):
+        cleaned_data = super(JourneyForm, self).clean()
+        if cleaned_data['departing_station'] == self.cleaned_data['arriving_station']:
+            msg = "Journey can not begin and end at the same station"
+            self.add_error('departing_station', msg)
+            self.add_error('arriving_station', msg)
+            raise forms.ValidationError(
+                msg
+            )
 
 class TicketForm(forms.ModelForm):
     valid_ticket_types = (
