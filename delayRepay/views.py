@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-from forms import DelayRepayUserRegForm, LoginForm, JourneyForm
+import forms as delayRepayForms
 
 
 def register_success(request):
@@ -15,7 +15,7 @@ def register_user(request):
     args.update(csrf(request))
 
     if request.method == 'POST':
-        form = DelayRepayUserRegForm(request.POST)
+        form = delayRepayForms.DelayRepayUserRegForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/accounts/register_success')
@@ -24,7 +24,7 @@ def register_user(request):
             return render_to_response('register.html', args)
 
     else:
-        args['form'] = DelayRepayUserRegForm()
+        args['form'] = delayRepayForms.DelayRepayUserRegForm()
         return render_to_response('register.html', args)
 
 
@@ -35,7 +35,7 @@ def index(request):
 def login(request):
     c = {}
     c.update(csrf(request))
-    c['form'] = LoginForm()
+    c['form'] = delayRepayForms.LoginForm()
     return render_to_response('login.html', c)
 
 
@@ -53,11 +53,26 @@ def auth_view(request):
         return HttpResponseRedirect('/accounts/register')
 
 
+def addJourney(request):
+    args = {}
+    if request.user.is_authenticated():
+        args['form'] = delayRepayForms.JourneyForm()
+        return render_to_response('addJourney.html', args)
+    else:
+        return HttpResponseRedirect('/accounts/login')
+
+def addTicket(request):
+    args = {}
+    if request.user.is_authenticated():
+        args['form'] = delayRepayForms.TicketForm()
+        return render_to_response('addTicket.html', args)
+    else:
+        return HttpResponseRedirect('/accounts/login')
+
 def loggedin(request):
     args = {}
     if request.user.is_authenticated():
-        args['form'] = JourneyForm()
-        #args['form'] = 'adam'
+        args['form'] = delayRepayForms.JourneyForm()
         return render_to_response('loggedin.html', args)
     else:
         return HttpResponseRedirect('/accounts/login')
