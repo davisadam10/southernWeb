@@ -21,6 +21,7 @@ class Journey(models.Model):
     date = models.DateField()
     startTime = models.TimeField()
     endTime = models.TimeField()
+    delayRepayUser = models.ForeignKey(UserData)
 
 class Ticket(models.Model):
     ticket_type = models.CharField(max_length=200)
@@ -29,6 +30,7 @@ class Ticket(models.Model):
 
     ticket_start_date = models.DateField()
     ticket_expire_date = models.DateField()
+    delayRepayUser = models.ForeignKey(UserData)
 
 
 
