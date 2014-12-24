@@ -1,5 +1,5 @@
 from django import forms
-from models import UserData, Journey
+from models import UserData, Journey, Ticket
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
@@ -142,3 +142,46 @@ class JourneyForm(forms.ModelForm):
             journey.save()
 
         return journey
+
+class TicketForm(forms.ModelForm):
+    valid_ticket_types = (
+        ("1", 'monthly'),
+        ("1", 'yearly'),
+    )
+
+    ticket_type = forms.ChoiceField(choices=valid_ticket_types, required=True)
+    cost = forms.CharField(required=True)
+    ticket_start_date = forms.DateField()
+    ticket_expiry_date = forms.DateField()
+
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.form_action = '/accounts/submit/'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-sm-4'
+    helper.field_class = 'col-sm-4'
+    helper.layout = Layout(
+        Field('ticket_type'),
+        Field('cost'),
+        Field('ticket_start_date', css_class='datepicker', id='datepicker'),
+        Field('ticket_expiry_date', css_class='datepicker', id='datepicker2'),
+    )
+
+    class Meta:
+        model = Ticket
+
+        fields = ("ticket_type", "cost",
+                  "ticket_start_date",
+                  "ticket_expiry_date"
+        )
+
+    def save(self, commit=True):
+        ticket = super(TicketForm, self).save(commit=False)
+        ticket.ticket_type = self.cleaned_data['ticket_type']
+        ticket.cost = self.cleaned_data['cost']
+        ticket.ticket_start_date = self.cleaned_data['ticket_start_date']
+        ticket.ticket_expiry_date = self.cleaned_data['ticket_expiry_date']
+        if commit:
+            ticket.save()
+
+        return ticket
