@@ -1,4 +1,7 @@
-from django.template import RequestContext, loader
+# coding=utf-8
+"""
+Views for the delay repay app
+"""
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
@@ -7,10 +10,20 @@ import forms as delayRepayForms
 
 
 def register_success(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     return render_to_response('register_success.html')
 
 
 def register_user(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     args = {}
     args.update(csrf(request))
 
@@ -29,10 +42,20 @@ def register_user(request):
 
 
 def index(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     return HttpResponse("This is the main index page")
 
 
 def login(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     c = {}
     c.update(csrf(request))
     c['form'] = delayRepayForms.LoginForm()
@@ -40,6 +63,11 @@ def login(request):
 
 
 def auth_view(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     if 'login' in request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -54,13 +82,18 @@ def auth_view(request):
 
 
 def addJourney(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     args = {}
     args.update(csrf(request))
     if request.user.is_authenticated():
         if request.method == 'POST':
             form = delayRepayForms.JourneyForm(request.POST)
             if form.is_valid():
-                #form.save()
+                # form.save()
                 print 'Should Be Saving'
                 return HttpResponseRedirect('/register_success')
             else:
@@ -73,7 +106,13 @@ def addJourney(request):
     else:
         return HttpResponseRedirect('/login')
 
+
 def addTicket(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     args = {}
     if request.user.is_authenticated():
         args['form'] = delayRepayForms.TicketForm()
@@ -81,7 +120,13 @@ def addTicket(request):
     else:
         return HttpResponseRedirect('/login')
 
+
 def logged_in(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     args = {}
     if request.user.is_authenticated():
         args['form'] = delayRepayForms.JourneyForm()
@@ -89,9 +134,21 @@ def logged_in(request):
     else:
         return HttpResponseRedirect('/login')
 
+
 def invalid_login(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     return render_to_response('invalid_login.html')
 
+
 def logout(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
     auth.logout(request)
     return render_to_response('logout.html')
