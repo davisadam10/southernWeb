@@ -16,6 +16,7 @@ class UserData(User):
 
 
 class Journey(models.Model):
+    journeyName = models.CharField(max_length=200)
     departingStation = models.CharField(max_length=200)
     arrivingStation = models.CharField(max_length=200)
     date = models.DateField()

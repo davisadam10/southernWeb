@@ -103,6 +103,7 @@ class JourneyForm(forms.ModelForm):
         ("5", "East Croydon"),
     )
 
+    journey_name = forms.CharField(max_length=200)
     departing_station = forms.ChoiceField(choices=validStations, required=True)
     arriving_station = forms.ChoiceField(choices=validStations, required=True)
     journey_date = forms.DateField()
@@ -117,6 +118,7 @@ class JourneyForm(forms.ModelForm):
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
+        Field('journey_name'),
         Field('departing_station'),
         Field('arriving_station'),
         Field('journey_date', css_class='datepicker', id='datepicker'),
@@ -128,21 +130,23 @@ class JourneyForm(forms.ModelForm):
     class Meta:
         model = Journey
 
-        fields = ("departing_station", "arriving_station",
+        fields = ("journey_name", "departing_station", "arriving_station",
                   "journey_date", "start_time",
                   "end_time"
         )
 
-    def save(self, commit=True):
+    def save(self, commit=True, user=None):
         journey = super(JourneyForm, self).save(commit=False)
+        journey.journeyName = self.cleaned_data['journey_name']
         journey.departingStation = self.cleaned_data['departing_station']
         journey.arrivingStation = self.cleaned_data['arriving_station']
         journey.date = self.cleaned_data['journey_date']
         journey.startTime = self.cleaned_data['start_time']
         journey.endTime = self.cleaned_data['end_time']
+        userModels = UserData.objects.filter(username=user)
+        journey.delayRepayUser = userModels[0]
         if commit:
-            pass
-            #journey.save()
+            journey.save()
 
         return journey
 

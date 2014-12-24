@@ -93,8 +93,7 @@ def addJourney(request):
         if request.method == 'POST':
             form = delayRepayForms.JourneyForm(request.POST)
             if form.is_valid():
-                # form.save()
-                print 'Should Be Saving'
+                form.save(user=request.user)
                 return HttpResponseRedirect('/register_success')
             else:
                 args['form'] = form

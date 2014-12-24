@@ -1,5 +1,5 @@
 from django.contrib import admin
-from delayRepay.models import UserData
+from delayRepay.models import UserData, Journey
 
 class UserDataAdmin(admin.ModelAdmin):
     list_display = (
@@ -9,4 +9,12 @@ class UserDataAdmin(admin.ModelAdmin):
         "city", "county", "postcode", "photocard_id"
     )
 
+class JourneyAdmin(admin.ModelAdmin):
+    list_display = (
+        "journeyName", "departingStation", "arrivingStation",
+        "date", "startTime",
+        "endTime", "delayRepayUser"
+    )
+
 admin.site.register(UserData, UserDataAdmin)
+admin.site.register(Journey, JourneyAdmin)
