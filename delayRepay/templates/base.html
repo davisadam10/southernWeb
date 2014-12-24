@@ -13,6 +13,7 @@
         <script>
             $(function() {
                 $( "#datepicker" ).datepicker();
+                $( "#datepicker2" ).datepicker();
             });
         </script>
         <script>
@@ -28,6 +29,10 @@
                 {% block sidebar %}
                 <ul>
                     <li><a href="/admin/">Admin</a></li>
+                    <li><a href="/accounts/addJourney">Add Journey</a></li>
+                    <li><a href="/accounts/addTicket">Add Ticket</a></li>
+                    <li><a href="/accounts/submitDelay">Submit Delay</a></li>
+
                 </ul>
                 {% endblock %}
             </div>
