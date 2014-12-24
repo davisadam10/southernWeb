@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'delayRepay.views.login', name='login'),
     url(r'^accounts/auth/$', 'delayRepay.views.auth_view', name='auth_view'),
     url(r'^accounts/logout/$', 'delayRepay.views.logout', name='logout'),
+    url(r'^accounts/addJourney/$', 'delayRepay.views.addJourney', name='addJourney'),
+    url(r'^accounts/addTicket/$', 'delayRepay.views.addTicket', name='addTicket'),
     url(r'^accounts/loggedin/$', 'delayRepay.views.loggedin', name='loggedin'),
     url(r'^accounts/invalid/$', 'delayRepay.views.invalid_login', name='invalid_login'),
 
