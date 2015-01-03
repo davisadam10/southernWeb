@@ -58,10 +58,15 @@ WSGI_APPLICATION = 'southernWeb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
 DATABASES['default'] =  dj_database_url.config()
 DATABASES['default']['ENGINE'] = 'django_postgrespool'
-DATABASES['default']['NAME'] = 'southernWeb'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
