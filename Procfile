@@ -1,1 +1,1 @@
-web: gunicorn southernWeb.wsgi --log-file -
+web: gunicorn southernweb.wsgi --log-file -
