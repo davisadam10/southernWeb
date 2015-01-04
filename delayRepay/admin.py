@@ -11,9 +11,7 @@ class UserDataAdmin(admin.ModelAdmin):
 
 class JourneyAdmin(admin.ModelAdmin):
     list_display = (
-        "journeyName", "departingStation", "arrivingStation",
-        "date", "startTime",
-        "endTime", "delayRepayUser"
+        "journeyName", "departingStation", "arrivingStation", "delayRepayUser"
     )
 
 admin.site.register(UserData, UserDataAdmin)

@@ -40,7 +40,7 @@ class Delay(models.Model):
     startTime = models.TimeField()
     endTime = models.TimeField()
     delay = models.CharField(max_length=200)
-    delay_reasons = models.CharField(max_length=200)
+    delay_reason = models.CharField(max_length=200)
     delayRepayUser = models.ForeignKey(UserData)
 
 

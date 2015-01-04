@@ -1,5 +1,9 @@
+# coding=utf-8
+"""
+Module which contains all of the forms for the site
+"""
 from django import forms
-from models import UserData, Journey, Ticket
+from models import UserData, Journey, Ticket, Delay
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
@@ -7,10 +11,13 @@ from crispy_forms.bootstrap import FormActions
 
 
 class DelayRepayUserRegForm(UserCreationForm):
+    """
+    Form for a user to register their details for the site
+    """
     email = forms.EmailField(required=True)
 
     title_choices = [("Mr", "Mr"), ("Mrs", "Mrs"), ("Miss", "Miss"), ("Ms", "Ms")]
-    title = forms.ChoiceField(choices=title_choices, required=True)
+    title = forms.ChoiceField(choices=title_choices)
 
     forename = forms.CharField(required=True)
     surname = forms.CharField(required=True)
@@ -46,14 +53,14 @@ class DelayRepayUserRegForm(UserCreationForm):
         FormActions(Submit('Register', 'Register', css_class='btn-primary'))
     )
 
-    class Meta:
+    class Meta(object):
         model = UserData
-
-        fields = ("username", "email",
-                  "password1", "password2",
-                  "title", "forename", "surname",
-                  "phoneNum", "address1", "address2",
-                  "city", "county", "postcode", "photocard_id"
+        fields = (
+            "username", "email",
+            "password1", "password2",
+            "title", "forename", "surname",
+            "phoneNum", "address1", "address2",
+            "city", "county", "postcode", "photocard_id"
         )
 
     def save(self, commit=True):
@@ -73,6 +80,7 @@ class DelayRepayUserRegForm(UserCreationForm):
             user.save()
 
         return user
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(label="Username", required=True)
@@ -94,22 +102,74 @@ class LoginForm(forms.Form):
         FormActions(Submit('register', value="register", css_class="btn-danger")),
     )
 
-class JourneyForm(forms.ModelForm):
-    validStations = (
-        ("1", "Earlswood (Surrey)"),
-        ("2", "Merstham"),
-        ("3", "London Victoria"),
-        ("4", "London Bridge"),
-        ("5", "East Croydon"),
-    )
 
-    journey_name = forms.CharField(max_length=200)
-    departing_station = forms.ChoiceField(choices=validStations, required=True)
-    arriving_station = forms.ChoiceField(choices=validStations, required=True)
+class DelayForm(forms.ModelForm):
+    delays = [
+        ('1', '30-59 mins'),
+        ('2', '60-119 mins'),
+        ('3', '120+ mins')
+    ]
+
+    delay_reasons = [
+        ('1', 'Train cancelled'),
+        ('2', 'Delayed on route'),
+        ('3', 'Delayed departure'),
+        ('4', 'Missed connection')
+    ]
+
+    delay = forms.ChoiceField(choices=delays)
+    delay_reason = forms.ChoiceField(choices=delay_reasons)
+
     journey_date = forms.DateField()
     start_time = forms.TimeField()
     end_time = forms.TimeField()
 
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.form_action = '/submitDelay/'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-sm-4'
+    helper.field_class = 'col-sm-4'
+    helper.layout = Layout(
+        Field('delay', css_class='input-sm'),
+        Field('delay_reason', css_class='input-sm'),
+        Field('journey_date', css_class='datepicker', id='datepicker'),
+        Field('start_time', css_class='input-sm', id='timepicker'),
+        Field('end_time', css_class='input-sm', id='timepicker2'),
+        FormActions(Submit('Add Journey', 'Add Journey', css_class='btn-primary')),
+    )
+
+    class Meta(object):
+        model = Delay
+        fields = ("delay", "delay_reason", "journey_date", "start_time", "end_time")
+
+    def save(self, commit=True, user=None):
+        delay = super(DelayForm, self).save(commit=False)
+        delay.delay = self.cleaned_data['delay']
+        delay.delay_reason = self.cleaned_data['delay_reason']
+        delay.date = self.cleaned_data['journey_date']
+        delay.startTime = self.cleaned_data['start_time']
+        delay.endTime = self.cleaned_data['end_time']
+        user_models = UserData.objects.filter(username=user)
+        delay.delayRepayUser = user_models[0]
+        if commit:
+            delay.save()
+
+        return delay
+
+
+class JourneyForm(forms.ModelForm):
+    validStations = (
+        ("Earlswood (Surrey)", "Earlswood (Surrey)"),
+        ("Merstham", "Merstham"),
+        ("London Victoria", "London Victoria"),
+        ("London Bridge", "London Bridge"),
+        ("East Croydon", "East Croydon"),
+    )
+
+    journey_name = forms.CharField(max_length=200)
+    departing_station = forms.ChoiceField(choices=validStations)
+    arriving_station = forms.ChoiceField(choices=validStations)
 
     helper = FormHelper()
     helper.form_method = 'POST'
@@ -121,30 +181,20 @@ class JourneyForm(forms.ModelForm):
         Field('journey_name'),
         Field('departing_station'),
         Field('arriving_station'),
-        Field('journey_date', css_class='datepicker', id='datepicker'),
-        Field('start_time', css_class='input-sm', id='timepicker'),
-        Field('end_time', css_class='input-sm', id='timepicker2'),
         FormActions(Submit('Add Journey', 'Add Journey', css_class='btn-primary'))
     )
 
-    class Meta:
+    class Meta(object):
         model = Journey
-
-        fields = ("journey_name", "departing_station", "arriving_station",
-                  "journey_date", "start_time",
-                  "end_time"
-        )
+        fields = ("journey_name", "departing_station", "arriving_station")
 
     def save(self, commit=True, user=None):
         journey = super(JourneyForm, self).save(commit=False)
         journey.journeyName = self.cleaned_data['journey_name']
         journey.departingStation = self.cleaned_data['departing_station']
         journey.arrivingStation = self.cleaned_data['arriving_station']
-        journey.date = self.cleaned_data['journey_date']
-        journey.startTime = self.cleaned_data['start_time']
-        journey.endTime = self.cleaned_data['end_time']
-        userModels = UserData.objects.filter(username=user)
-        journey.delayRepayUser = userModels[0]
+        user_models = UserData.objects.filter(username=user)
+        journey.delayRepayUser = user_models[0]
         if commit:
             journey.save()
 
@@ -160,13 +210,14 @@ class JourneyForm(forms.ModelForm):
                 msg
             )
 
+
 class TicketForm(forms.ModelForm):
     valid_ticket_types = (
         ("1", 'monthly'),
         ("1", 'yearly'),
     )
 
-    ticket_type = forms.ChoiceField(choices=valid_ticket_types, required=True)
+    ticket_type = forms.ChoiceField(choices=valid_ticket_types)
     cost = forms.CharField(required=True)
     ticket_start_date = forms.DateField()
     ticket_expiry_date = forms.DateField()
@@ -184,13 +235,8 @@ class TicketForm(forms.ModelForm):
         Field('ticket_expiry_date', css_class='datepicker', id='datepicker2'),
     )
 
-    class Meta:
+    class Meta(object):
         model = Ticket
-
-        fields = ("ticket_type", "cost",
-                  "ticket_start_date",
-                  "ticket_expiry_date"
-        )
 
     def save(self, commit=True):
         ticket = super(TicketForm, self).save(commit=False)
