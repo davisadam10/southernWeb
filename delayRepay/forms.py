@@ -213,19 +213,19 @@ class JourneyForm(forms.ModelForm):
 
 class TicketForm(forms.ModelForm):
     valid_ticket_types = (
-        ("1", 'monthly'),
-        ("1", 'yearly'),
+        ("monthly", 'monthly'),
+        ("yearly", 'yearly'),
     )
 
     ticket_type = forms.ChoiceField(choices=valid_ticket_types)
     cost = forms.CharField(required=True)
-    ticket_start_date = forms.DateField()
-    ticket_expiry_date = forms.DateField()
-    ticket_photo = forms.ImageField()
+    ticket_start_date = forms.DateField(required=True)
+    ticket_expiry_date = forms.DateField(required=True)
+    ticket_photo = forms.ImageField(required=True)
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/submit/'
+    helper.form_action = '/addTicket/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
@@ -234,19 +234,23 @@ class TicketForm(forms.ModelForm):
         Field('cost'),
         Field('ticket_start_date', css_class='datepicker', id='datepicker'),
         Field('ticket_expiry_date', css_class='datepicker', id='datepicker2'),
-        Field('ticket_photo')
+        Field('ticket_photo'),
+        FormActions(Submit('Add Ticket', 'Add Ticket', css_class='btn-primary'))
     )
 
     class Meta(object):
         model = Ticket
         fields = ('ticket_type', 'cost', 'ticket_start_date', 'ticket_expiry_date', 'ticket_photo')
 
-    def save(self, commit=True):
+    def save(self, commit=True, user=None):
         ticket = super(TicketForm, self).save(commit=False)
         ticket.ticket_type = self.cleaned_data['ticket_type']
         ticket.cost = self.cleaned_data['cost']
         ticket.ticket_start_date = self.cleaned_data['ticket_start_date']
         ticket.ticket_expiry_date = self.cleaned_data['ticket_expiry_date']
+        ticket.ticket_photo = self.cleaned_data['ticket_photo']
+        user_models = UserData.objects.filter(username=user)
+        ticket.delayRepayUser = user_models[0]
         if commit:
             ticket.save()
 
