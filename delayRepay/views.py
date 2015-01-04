@@ -113,9 +113,19 @@ def addTicket(request):
     :return: :rtype:
     """
     args = {}
+    args.update(csrf(request))
     if request.user.is_authenticated():
-        args['form'] = delayRepayForms.TicketForm()
-        return render_to_response('addTicket.html', args)
+        if request.method == 'POST':
+            form = delayRepayForms.TicketForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save(user=request.user)
+                return HttpResponseRedirect('/register_success')
+            else:
+                args['form'] = form
+                return render_to_response('addTicket.html', args)
+        else:
+            args['form'] = delayRepayForms.TicketForm()
+            return render_to_response('addTicket.html', args)
     else:
         return HttpResponseRedirect('/login')
 
