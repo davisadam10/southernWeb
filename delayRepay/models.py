@@ -2,6 +2,7 @@
 """
 The Models for the delay repay automation
 """
+import os
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -44,16 +45,19 @@ class Delay(models.Model):
     delayRepayUser = models.ForeignKey(UserData)
 
 
+def get_image_path(instance, filename):
+    return os.path.join('ticketphotos', str(instance.id), filename)
+
 class Ticket(models.Model):
     """
     Model to store ticket info
     """
     ticket_type = models.CharField(max_length=200)
     cost = models.CharField(max_length=200)
-    ticket_photo = models.ImageField()
+    ticket_photo = models.ImageField(upload_to='ticket_photos/', default='pic_folder/None/no-img.jpg')
 
     ticket_start_date = models.DateField()
-    ticket_expire_date = models.DateField()
+    ticket_expiry_date = models.DateField()
     delayRepayUser = models.ForeignKey(UserData)
 
 
