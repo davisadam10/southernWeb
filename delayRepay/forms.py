@@ -221,6 +221,7 @@ class TicketForm(forms.ModelForm):
     cost = forms.CharField(required=True)
     ticket_start_date = forms.DateField()
     ticket_expiry_date = forms.DateField()
+    ticket_photo = forms.ImageField()
 
     helper = FormHelper()
     helper.form_method = 'POST'
@@ -233,10 +234,12 @@ class TicketForm(forms.ModelForm):
         Field('cost'),
         Field('ticket_start_date', css_class='datepicker', id='datepicker'),
         Field('ticket_expiry_date', css_class='datepicker', id='datepicker2'),
+        Field('ticket_photo')
     )
 
     class Meta(object):
         model = Ticket
+        fields = ('ticket_type', 'cost', 'ticket_start_date', 'ticket_expiry_date', 'ticket_photo')
 
     def save(self, commit=True):
         ticket = super(TicketForm, self).save(commit=False)

@@ -50,7 +50,7 @@ class Ticket(models.Model):
     """
     ticket_type = models.CharField(max_length=200)
     cost = models.CharField(max_length=200)
-    ticket_photo_path = models.CharField(max_length=200)
+    ticket_photo = models.ImageField()
 
     ticket_start_date = models.DateField()
     ticket_expire_date = models.DateField()
