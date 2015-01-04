@@ -28,4 +28,5 @@ urlpatterns = patterns(
     url(r'^register_success/$', 'delayRepay.views.register_success', name='invalid_login'),
 
 
+
 ) + static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
