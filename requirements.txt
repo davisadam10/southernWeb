@@ -12,4 +12,4 @@ requests==2.2.1
 urllib3==1.7.1
 virtualenv==1.11.4
 whitenoise==1.0.6
-PIL=1.1.7
+PIL==1.1.7
