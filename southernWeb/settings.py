@@ -94,8 +94,6 @@ MEDIA_ROOT = '/home/adam/media/'
 from S3 import CallingFormat
 
 AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
-AWS_ACCESS_KEY_ID="AKIAINNAN5OOBMVG5NNA"
-AWS_SECRET_ACCESS_KEY="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"
 AWS_STORAGE_BUCKET_NAME="southernwebdelayrepay"
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
