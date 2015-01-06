@@ -54,7 +54,7 @@ class Ticket(models.Model):
     """
     ticket_type = models.CharField(max_length=200)
     cost = models.CharField(max_length=200)
-    ticket_photo = models.ImageField(upload_to='ticket_photos/', default='pic_folder/None/no-img.jpg')
+    ticket_photo = models.ImageField(upload_to='ticket_photos', default='pic_folder/None/no-img.jpg')
 
     ticket_start_date = models.DateField()
     ticket_expiry_date = models.DateField()

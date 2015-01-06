@@ -86,7 +86,17 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 MEDIA_ROOT = '/home/adam/media/'
+
+from S3 import CallingFormat
+
+AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
+AWS_ACCESS_KEY_ID="AKIAINNAN5OOBMVG5NNA"
+AWS_SECRET_ACCESS_KEY="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"
+AWS_STORAGE_BUCKET_NAME="southernwebdelayrepay"
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+
