@@ -3,6 +3,8 @@ coverage==3.7.1
 dj-database-url==0.3.0
 django-crispy-forms==1.4.0
 django-postgrespool==0.3.0
+django-storages==1.1.8
+boto==2.34.0
 gunicorn==19.1.1
 mechanize==0.2.5
 pylint==1.1.0
