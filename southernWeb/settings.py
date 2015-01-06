@@ -91,9 +91,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 MEDIA_ROOT = '/home/adam/media/'
 
-from S3 import CallingFormat
-
-AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
+AWS_CALLING_FORMAT = 2
 AWS_STORAGE_BUCKET_NAME="southernwebdelayrepay"
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
