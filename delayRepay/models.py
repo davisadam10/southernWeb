@@ -46,7 +46,14 @@ class Delay(models.Model):
 
 
 def get_image_path(instance, filename):
-    return os.path.join('ticketphotos', str(instance.id), filename)
+    return os.path.join(
+        'ticket_photos',
+        '%s_%s' % (
+            instance.delayRepayUser.forename,
+            instance.delayRepayUser.surname
+        ),
+        filename
+    )
 
 class Ticket(models.Model):
     """
@@ -54,7 +61,7 @@ class Ticket(models.Model):
     """
     ticket_type = models.CharField(max_length=200)
     cost = models.CharField(max_length=200)
-    ticket_photo = models.ImageField(upload_to='ticket_photos', default='pic_folder/None/no-img.jpg')
+    ticket_photo = models.ImageField(upload_to=get_image_path, default='pic_folder/None/no-img.jpg')
 
     ticket_start_date = models.DateField()
     ticket_expiry_date = models.DateField()
