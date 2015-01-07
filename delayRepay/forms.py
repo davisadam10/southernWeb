@@ -248,9 +248,16 @@ class TicketForm(forms.ModelForm):
         ticket.cost = self.cleaned_data['cost']
         ticket.ticket_start_date = self.cleaned_data['ticket_start_date']
         ticket.ticket_expiry_date = self.cleaned_data['ticket_expiry_date']
-        ticket.ticket_photo = self.cleaned_data['ticket_photo']
         user_models = UserData.objects.filter(username=user)
         ticket.delayRepayUser = user_models[0]
+        date_str_format = "%Y_%m_%d_%H_%M_%S"
+        in_memory_field = self.cleaned_data['ticket_photo']
+        in_memory_field.name = '%s_%s_%s.jpg' % (
+            ticket.delayRepayUser.forename,
+            ticket.delayRepayUser.surname,
+            datetime.datetime.now().strftime(date_str_format)
+        )
+        ticket.ticket_photo = in_memory_field
         if commit:
             ticket.save()
 
