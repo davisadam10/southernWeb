@@ -3,7 +3,7 @@
 Views for the delay repay app
 """
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 import forms as delayRepayForms
@@ -15,7 +15,7 @@ def register_success(request):
     :param request:
     :return: :rtype:
     """
-    return render_to_response('register_success.html')
+    return HttpResponseRedirect('/')
 
 
 def register_user(request):
