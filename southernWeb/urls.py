@@ -12,12 +12,11 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     # Examples:
-    url(r'^$', 'delayRepay.views.login', name='login'),
+    url(r'^$', 'delayRepay.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
 
     # Authentication
     url(r'^login/$', 'delayRepay.views.login', name='login'),
-    url(r'^auth/$', 'delayRepay.views.auth_view', name='auth_view'),
     url(r'^logout/$', 'delayRepay.views.logout', name='logout'),
     url(r'^addJourney/$', 'delayRepay.views.addJourney', name='addJourney'),
     url(r'^addTicket/$', 'delayRepay.views.addTicket', name='addTicket'),

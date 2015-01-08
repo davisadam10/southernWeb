@@ -31,7 +31,7 @@ def register_user(request):
         form = delayRepayForms.DelayRepayUserRegForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/register_success')
+            return HttpResponseRedirect('/')
         else:
             args['form'] = form
             return render_to_response('register.html', args)
@@ -41,44 +41,47 @@ def register_user(request):
         return render_to_response('register.html', args)
 
 
-def index(request):
-    """
-
-    :param request:
-    :return: :rtype:
-    """
-    return HttpResponse("This is the main index page")
-
-
 def login(request):
     """
 
     :param request:
     :return: :rtype:
     """
-    c = {}
-    c.update(csrf(request))
-    c['form'] = delayRepayForms.LoginForm()
-    return render_to_response('login.html', c)
-
-
-def auth_view(request):
-    """
-
-    :param request:
-    :return: :rtype:
-    """
+    args = {}
+    args.update(csrf(request))
     if 'login' in request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return HttpResponseRedirect('/logged_in')
+            return HttpResponseRedirect('/')
         else:
-            return HttpResponseRedirect('/invalid')
-    else:
+            form = delayRepayForms.LoginForm(request.POST)
+            args['form'] = form
+            return render_to_response('login.html', args)
+
+    elif 'register' in request.POST:
         return HttpResponseRedirect('/register')
+
+    else:
+        args['form'] = delayRepayForms.LoginForm()
+        return render_to_response('login.html', args)
+
+
+def index(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
+    args = {}
+    args.update(csrf(request))
+    if request.user.is_authenticated():
+        return render_to_response('index.html', args)
+    else:
+        return HttpResponseRedirect('/login')
+
 
 
 def addJourney(request):
@@ -94,7 +97,7 @@ def addJourney(request):
             form = delayRepayForms.JourneyForm(request.POST)
             if form.is_valid():
                 form.save(user=request.user)
-                return HttpResponseRedirect('/register_success')
+                return HttpResponseRedirect('/')
             else:
                 args['form'] = form
                 return render_to_response('addJourney.html', args)
@@ -119,7 +122,7 @@ def addTicket(request):
             form = delayRepayForms.TicketForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save(user=request.user)
-                return HttpResponseRedirect('/register_success')
+                return HttpResponseRedirect('/')
             else:
                 args['form'] = form
                 return render_to_response('addTicket.html', args)
@@ -136,10 +139,8 @@ def logged_in(request):
     :param request:
     :return: :rtype:
     """
-    args = {}
     if request.user.is_authenticated():
-        args['form'] = delayRepayForms.JourneyForm()
-        return render_to_response('logged_in.html', args)
+        return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('/login')
 
@@ -160,4 +161,4 @@ def logout(request):
     :return: :rtype:
     """
     auth.logout(request)
-    return render_to_response('logout.html')
+    return HttpResponseRedirect('/')

@@ -87,11 +87,11 @@ class LoginForm(forms.Form):
     username = forms.CharField(label="Username", required=True)
     password = forms.CharField(
         label="Password", required=True, widget=forms.PasswordInput)
-    remember = forms.BooleanField(label="Remember Me?")
+    remember = forms.BooleanField(label="Remember Me?", required=False)
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/auth/'
+    helper.form_action = '/login/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
