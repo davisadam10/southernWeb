@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 import forms as delayRepayForms
+import delayRepay.models as models
 
 
 def register_success(request):
@@ -77,8 +78,30 @@ def index(request):
     """
     args = {}
     args.update(csrf(request))
+
     if request.user.is_authenticated():
-        return render_to_response('index.html', args)
+        user_model = models.UserData.objects.filter(username=request.user)[0]
+        args['journeys'] = models.Journey.objects.filter(delayRepayUser=user_model)
+
+        if request.method == 'POST':
+            form = delayRepayForms.DelayForm(request.POST)
+            if form.is_valid():
+                success = False
+                try:
+                    print "Doing Delay Repay"
+                    success = True
+                except:
+                    print "Crap"
+
+                if success:
+                    form.save(user=request.user)
+                return HttpResponseRedirect('/')
+            else:
+                args['form'] = form
+                return render_to_response('index.html', args)
+        else:
+            args['form'] = delayRepayForms.DelayForm()
+            return render_to_response('index.html', args)
     else:
         return HttpResponseRedirect('/login')
 

@@ -2,15 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h2 >Welcome To The Index</h2>
-    <p>Select Your Journey</p>
+    <h1 >Welcome To Southern Fail Delay Repay</h1>
+    <h2 ><p>Select Your Journey</p></h2>
 	<div class="list-group">
-	    <a href="#" class="list-group-item">Cras justo odio</a>
-	    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-	    <a href="#" class="list-group-item">Morbi leo risus</a>
-	    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-	    <a href="#" class="list-group-item">Vestibulum at eros</a>
+        {% for journey in journeys %}
+			<a href="#" class="list-group-item">{{ journey.journeyName }}</a>
+		{% endfor %}
 	</div>
+    <h2 ><p>Submit Your Delay</p></h2>
+    <div class="container">
+      <div class="row">
+        {% crispy form %}
+      </div>
+    </div>
 
 {% endblock %}
 
