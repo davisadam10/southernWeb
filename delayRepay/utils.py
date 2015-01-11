@@ -83,7 +83,6 @@ def submit_delay(request, delay, journey, debug=True):
     compensation = "National Rail Vouchers"
     main_form['compensation'] = [compensation, ]
     main_form['photocard_id_1'] = user.photocard_id
-    print main_form
 
     if not debug:
         response = br.submit()
@@ -91,4 +90,3 @@ def submit_delay(request, delay, journey, debug=True):
         temp_file = open("/home/adam/temp.html", "w")
         temp_file.write(text)
         temp_file.close()
-
