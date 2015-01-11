@@ -79,10 +79,11 @@ def index(request):
     """
     args = {}
     args.update(csrf(request))
-
     if request.user.is_authenticated():
-        user_model = models.UserData.objects.filter(username=request.user)[0]
-        args['journeys'] = models.Journey.objects.filter(delayRepayUser=user_model)
+        user_models = models.UserData.objects.filter(username=request.user)
+        if not user_models:
+            return HttpResponseRedirect('/login')
+        args['journeys'] = models.Journey.objects.filter(delayRepayUser=user_models[0])
         journey_names = ["#journeyItem%s" % journey.id for journey in args['journeys']]
         args['journey_names'] = ', '.join(journey_names)
         if request.method == 'POST':
@@ -90,7 +91,7 @@ def index(request):
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user)
-                success = utils.submit_delay(request, delay, journey[0], debug=True)
+                success = utils.submit_delay(request, delay, journey[0])
                 if not success:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
