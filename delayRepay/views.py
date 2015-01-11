@@ -89,18 +89,13 @@ def index(request):
             journey = [journey for journey in args['journeys'] if journey.journeyName == request.POST['journey_name']]
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
-                success = False
                 delay = form.save(user=request.user)
+                success = utils.submit_delay(request, delay, journey[0], debug=True)
+                if not success:
+                    delay.delete()
+                    return HttpResponseRedirect('/noTicket')
 
-                utils.submit_delay(request, delay, journey[0], debug=True)
-                success = True
-
-
-
-                if success:
-                    print 'Now Set The Delay To Be Sucessful'
-
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/delaySuccess')
             else:
                 args['form'] = form
                 return render_to_response('index.html', args)
@@ -160,6 +155,21 @@ def addTicket(request):
     else:
         return HttpResponseRedirect('/login')
 
+def noTicket(request):
+    args = {}
+    args.update(csrf(request))
+    if request.user.is_authenticated():
+        return render_to_response('noTicket.html', args)
+    else:
+        return HttpResponseRedirect('/')
+
+def delaySuccess(request):
+    args = {}
+    args.update(csrf(request))
+    if request.user.is_authenticated():
+        return render_to_response('delaySuccess.html', args)
+    else:
+        return HttpResponseRedirect('/')
 
 def logged_in(request):
     """
