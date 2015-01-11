@@ -91,7 +91,7 @@ def index(request):
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user)
-                success = utils.submit_delay(request, delay, journey[0])
+                success = utils.submit_delay(request, delay, journey[0], debug=False)
                 if not success:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
