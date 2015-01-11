@@ -98,7 +98,7 @@ def index(request):
 
 
                 if success:
-                    print 'Now Set The Daly To Be Sucessful'
+                    print 'Now Set The Delay To Be Sucessful'
 
                 return HttpResponseRedirect('/')
             else:

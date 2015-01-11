@@ -160,6 +160,23 @@ class DelayForm(forms.ModelForm):
 
         return delay
 
+    def clean(self):
+        cleaned_data = super(DelayForm, self).clean()
+        msg = "Please select a journey or add a journey"
+        if "journey_name" in cleaned_data:
+            print cleaned_data['journey_name']
+            if cleaned_data['journey_name'] == "":
+                raise forms.ValidationError(
+                    msg
+                )
+        else:
+            raise forms.ValidationError(
+                    msg
+                )
+
+
+
+
 
 class JourneyForm(forms.ModelForm):
     validStations = (

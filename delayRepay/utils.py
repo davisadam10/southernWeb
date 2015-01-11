@@ -2,11 +2,11 @@ __author__ = 'adam'
 import mechanize
 import delayRepay.models as models
 
-def get_best_valid_ticket(user, delay):
+def get_best_valid_ticket(user, date):
     all_tickets = models.Ticket.objects.filter(delayRepayUser=user)
     validTicket = None
     for ticket in all_tickets:
-        if ticket.ticket_start_date <= delay.date <= ticket.ticket_expiry_date:
+        if ticket.ticket_start_date <= date <= ticket.ticket_expiry_date:
             if not validTicket:
                 validTicket = ticket
 
@@ -31,7 +31,9 @@ def submit_delay(request, delay, journey, debug=True):
     :rtype:
     """
     user = models.UserData.objects.filter(username=request.user)[0]
-    ticket = get_best_valid_ticket(user, delay)
+    ticket = get_best_valid_ticket(user, delay.date)
+    if not ticket:
+        return False
 
     br = mechanize.Browser()
     url = 'http://www.southernrailway.com/your-journey/customer-services/delay-repay/delay-repay-form'
@@ -86,7 +88,9 @@ def submit_delay(request, delay, journey, debug=True):
 
     if not debug:
         response = br.submit()
-        text = response.read()
-        temp_file = open("/home/adam/temp.html", "w")
-        temp_file.write(text)
-        temp_file.close()
+        #text = response.read()
+        #temp_file = open("/home/adam/temp.html", "w")
+        #temp_file.write(text)
+        #temp_file.close()
+
+    return True
