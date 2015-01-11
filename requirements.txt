@@ -13,3 +13,4 @@ urllib3==1.7.1
 virtualenv==1.11.4
 whitenoise==1.0.6
 Pillow==2.3.0
+mechanize==0.2.5
