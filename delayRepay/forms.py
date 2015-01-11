@@ -106,38 +106,40 @@ class LoginForm(forms.Form):
 
 class DelayForm(forms.ModelForm):
     delays = [
-        ('1', '30-59 mins'),
-        ('2', '60-119 mins'),
-        ('3', '120+ mins')
+        ('30-59 mins', '30-59 mins'),
+        ('60-119 mins', '60-119 mins'),
+        ('120+ mins', '120+ mins')
     ]
 
     delay_reasons = [
-        ('1', 'Train cancelled'),
-        ('2', 'Delayed on route'),
-        ('3', 'Delayed departure'),
-        ('4', 'Missed connection')
+        ('Train cancelled', 'Train cancelled'),
+        ('Delayed on route', 'Delayed on route'),
+        ('Delayed departure', 'Delayed departure'),
+        ('Missed connection', 'Missed connection')
     ]
 
     delay = forms.ChoiceField(choices=delays)
     delay_reason = forms.ChoiceField(choices=delay_reasons)
 
+    journey_name = forms.CharField(required=True)
     journey_date = forms.DateField()
     start_time = forms.TimeField()
     end_time = forms.TimeField()
 
     helper = FormHelper()
     helper.form_method = 'POST'
-    helper.form_action = '/submitDelay/'
+    helper.form_action = '/'
     helper.form_class = 'form-horizontal'
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
         Field('delay', css_class='input-sm'),
         Field('delay_reason', css_class='input-sm'),
+        Field('journey_name', css_class='input-sm', type="hidden"),
         Field('journey_date', css_class='datepicker', id='datepicker'),
         Field('start_time', css_class='input-sm', id='timepicker'),
         Field('end_time', css_class='input-sm', id='timepicker2'),
-        FormActions(Submit('Add Journey', 'Add Journey', css_class='btn-primary')),
+        FormActions(Submit('Submit Delay', 'Submit Delay', css_class='btn-primary')),
     )
 
     class Meta(object):

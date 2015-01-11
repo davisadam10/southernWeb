@@ -6,7 +6,7 @@
     <h2 ><p>Select Your Journey</p></h2>
 	<div class="list-group">
         {% for journey in journeys %}
-			<a href="#" class="list-group-item">{{ journey.journeyName }}</a>
+			<a id="journeyItem{{ journey.id }}" href="#" class="list-group-item" data-value={{ journey.journeyName }}>{{ journey.journeyName }}</a>
 		{% endfor %}
 	</div>
     <h2 ><p>Submit Your Delay</p></h2>
@@ -15,6 +15,14 @@
         {% crispy form %}
       </div>
     </div>
-
+<script>
+	$(document).ready(function() {
+        var a = "{{ journey_names }}";
+    $(a).click(function() {
+        var selected_journey = $(this).attr('data-value');
+        $('#id_journey_name').val(selected_journey);
+    });
+});
+</script>
 {% endblock %}
 

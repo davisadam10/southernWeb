@@ -8,6 +8,7 @@ from django.contrib import auth
 from django.core.context_processors import csrf
 import forms as delayRepayForms
 import delayRepay.models as models
+import delayRepay.utils as utils
 
 
 def register_success(request):
@@ -82,19 +83,23 @@ def index(request):
     if request.user.is_authenticated():
         user_model = models.UserData.objects.filter(username=request.user)[0]
         args['journeys'] = models.Journey.objects.filter(delayRepayUser=user_model)
-
+        journey_names = ["#journeyItem%s" % journey.id for journey in args['journeys']]
+        args['journey_names'] = ', '.join(journey_names)
         if request.method == 'POST':
+            journey = [journey for journey in args['journeys'] if journey.journeyName == request.POST['journey_name']]
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 success = False
-                try:
-                    print "Doing Delay Repay"
-                    success = True
-                except:
-                    print "Crap"
+                delay = form.save(user=request.user)
+
+                utils.submit_delay(request, delay, journey[0], debug=True)
+                success = True
+
+
 
                 if success:
-                    form.save(user=request.user)
+                    print 'Now Set The Daly To Be Sucessful'
+
                 return HttpResponseRedirect('/')
             else:
                 args['form'] = form

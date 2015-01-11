@@ -1,5 +1,5 @@
 from django.contrib import admin
-from delayRepay.models import UserData, Journey, Ticket
+from delayRepay.models import UserData, Journey, Ticket, Delay
 
 class UserDataAdmin(admin.ModelAdmin):
     list_display = (
@@ -19,6 +19,13 @@ class TicketAdmin(admin.ModelAdmin):
         'ticket_type', 'cost', 'ticket_start_date', 'ticket_expiry_date', 'ticket_photo', 'delayRepayUser'
     )
 
+class DelayAdmin(admin.ModelAdmin):
+    list_display = (
+        "delay", "delay_reason", "date", "startTime", "endTime", 'delayRepayUser'
+    )
+
+
 admin.site.register(UserData, UserDataAdmin)
 admin.site.register(Journey, JourneyAdmin)
 admin.site.register(Ticket, TicketAdmin)
+admin.site.register(Delay, DelayAdmin)
