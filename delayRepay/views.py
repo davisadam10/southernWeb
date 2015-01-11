@@ -96,7 +96,6 @@ def index(request):
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
 
-                return HttpResponse(success)
                 return HttpResponseRedirect('/delaySuccess')
             else:
                 args['form'] = form
