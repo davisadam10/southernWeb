@@ -3,14 +3,17 @@
 
 {% block content %}
     <h1 >Welcome To Southern Fail Delay Repay</h1>
-    <h2 ><p>Select Your Journey</p></h2>
+    <h2 ><p>Select A Journey</p></h2>
 	<div class="list-group">
         {% for journey in journeys %}
 			<a id="journeyItem{{ journey.id }}" href="#" class="list-group-item" data-value={{ journey.journeyName }}>{{ journey.journeyName }}</a>
 		{% endfor %}
 	</div>
+    <form action="/addJourney" method="get">
+		<input id='journeyButton' type="submit" value="Add Journey" class="btn btn-primary btn-primary">
+	</form><br>
     <h2 ><p>Submit Your Delay</p></h2>
-    <div class="container">
+    <div class="list-group">
       <div class="row">
         {% crispy form %}
       </div>

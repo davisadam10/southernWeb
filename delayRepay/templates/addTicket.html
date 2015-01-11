@@ -2,12 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2 >Add A Ticket</h2>
-    <div class="container">
+  <h1 >Add A Ticket</h1>
+    <div class="list-group">
       <div class="row">
         {% crispy form %}
       </div>
     </div>
-    <p>Click <a href="/logout/">here to logout</a></p>
 {% endblock %}
 

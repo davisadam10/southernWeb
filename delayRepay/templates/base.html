@@ -10,7 +10,13 @@
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <script src="{% static "js/listgroup.js" %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static "css/jquery.ptTimeSelect.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "css/default.css" %}" />
         <script type="text/javascript" src="{% static "js/jquery.ptTimeSelect.js" %}"></script>
+        <style>
+			h1 {text-align:center;}
+			p {text-align:center;}
+            p {text-align:center;}
+		</style>
         <script>
             $(function() {
                 $( "#datepicker" ).datepicker();
@@ -30,9 +36,7 @@
                 {% block sidebar %}
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/addJourney">Add Journey</a></li>
                     <li><a href="/addTicket">Add Ticket</a></li>
-                    <li><a href="/logout/">Logout</a></li>
 
                 </ul>
                 {% endblock %}
@@ -42,6 +46,7 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
+        <p>Click <a href="/logout/">here to logout</a></p>
     </body>
 </html>
 
