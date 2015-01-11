@@ -88,7 +88,8 @@ def submit_delay(request, delay, journey, debug=True):
 
     if not debug:
         response = br.submit()
-        #text = response.read()
+        text = response.read()
+        return text
         #temp_file = open("/home/adam/temp.html", "w")
         #temp_file.write(text)
         #temp_file.close()
