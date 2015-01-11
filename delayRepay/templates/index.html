@@ -16,7 +16,11 @@
       </div>
     </div>
 <script>
-	$(document).ready(function() {
+	window.onload = function () {
+        $('#id_journey_name').val("");
+    }
+
+    $(document).ready(function() {
         var a = "{{ journey_names }}";
     $(a).click(function() {
         var selected_journey = $(this).attr('data-value');
