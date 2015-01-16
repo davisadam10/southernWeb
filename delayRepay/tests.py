@@ -1,10 +1,14 @@
-from django.test import TestCase
-from delayRepay.models import UserData, Journey
+import time
+from selenium import webdriver
+
+from django.test import TestCase, LiveServerTestCase
+from delayRepay.models import UserData
 
 
 # Create your tests here.
 class UserModelTests(TestCase):
     testUsers = ['Adam', 'Holly', 'Kelly', 'Ben']
+
     def setUp(self):
         for name in self.testUsers:
             user = UserData()
@@ -37,4 +41,24 @@ class UserModelTests(TestCase):
         self.assertEquals(holly_expected_friends, [friend.first_name for friend in holly.friends.all()])
         self.assertEquals(kelly_expected_friends, [friend.first_name for friend in kelly.friends.all()])
         self.assertEquals(ben_expected_friends, [friend.first_name for friend in ben.friends.all()])
+
+
+class Test_Functional(LiveServerTestCase):
+    def setUp(self):
+        self.selenium = webdriver.Chrome()
+        self.selenium.maximize_window()
+        super(Test_Functional, self).setUp()
+
+    def tearDown(self):
+        # Call tearDown to close the web browser
+        time.sleep(2)
+        self.selenium.quit()
+
+        super(Test_Functional, self).tearDown()
+
+    def test_open(self):
+        self.selenium.get('http://localhost:8081')
+
+        self.assertEquals(1, 1)
+
 
