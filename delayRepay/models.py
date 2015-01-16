@@ -21,6 +21,7 @@ class UserData(User):
     county = models.CharField(max_length=200)
     postcode = models.CharField(max_length=7)
     photocard_id = models.CharField(max_length=200)
+    friends = models.ManyToManyField('self')
 
 
 class Journey(models.Model):
@@ -43,6 +44,7 @@ class Delay(models.Model):
     delay = models.CharField(max_length=200)
     delay_reason = models.CharField(max_length=200)
     delayRepayUser = models.ForeignKey(UserData)
+    claimed = models.BooleanField(default=False)
 
 
 def get_image_path(instance, filename):
