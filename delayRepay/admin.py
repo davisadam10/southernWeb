@@ -21,7 +21,7 @@ class TicketAdmin(admin.ModelAdmin):
 
 class DelayAdmin(admin.ModelAdmin):
     list_display = (
-        "delay", "delay_reason", "date", "startTime", "endTime", 'delayRepayUser'
+        "delay", "delay_reason", "date", "startTime", "endTime", 'delayRepayUser', 'claimed'
     )
 
 
