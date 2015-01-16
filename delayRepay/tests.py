@@ -56,9 +56,10 @@ class Test_Functional(LiveServerTestCase):
 
         super(Test_Functional, self).tearDown()
 
-    def test_open(self):
+    def test_register(self):
         self.selenium.get('http://localhost:8081')
+        self.selenium.find_element_by_id('submit-id-login').click()
 
-        self.assertEquals(1, 1)
+        self.assertEquals(1 + 2, 1)
 
 
