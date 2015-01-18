@@ -57,6 +57,7 @@ def get_image_path(instance, filename):
         filename
     )
 
+
 class Ticket(models.Model):
     """
     Model to store ticket info
@@ -70,8 +71,9 @@ class Ticket(models.Model):
     delayRepayUser = models.ForeignKey(UserData)
 
 
-
-
-
-
-
+class Station(models.Model):
+    """
+    Model to store regular journeys
+    """
+    name = models.CharField(max_length=200)
+    short_name = models.CharField(max_length=200)

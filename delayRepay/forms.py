@@ -3,7 +3,7 @@
 Module which contains all of the forms for the site
 """
 from django import forms
-from models import UserData, Journey, Ticket, Delay
+from models import UserData, Journey, Ticket, Delay, Station
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
@@ -179,6 +179,7 @@ class DelayForm(forms.ModelForm):
 
 
 class JourneyForm(forms.ModelForm):
+    all_stations = Station.objects.all()
     validStations = (
         ("Earlswood (Surrey)", "Earlswood (Surrey)"),
         ("Merstham", "Merstham"),
@@ -186,6 +187,7 @@ class JourneyForm(forms.ModelForm):
         ("London Bridge", "London Bridge"),
         ("East Croydon", "East Croydon"),
     )
+    validStations = [(station.name, station.name)for station in all_stations]
 
     journey_name = forms.CharField(max_length=200)
     departing_station = forms.ChoiceField(choices=validStations)
