@@ -80,12 +80,14 @@ def index(request):
     args = {}
     args.update(csrf(request))
     if request.user.is_authenticated():
-        user_models = models.UserData.objects.filter(username=request.user)
-        if not user_models:
+        user_model = utils.get_user_model_from_request(request)
+        if not user_model:
             return HttpResponseRedirect('/login')
-        args['journeys'] = models.Journey.objects.filter(delayRepayUser=user_models[0])
+
+        args['journeys'] = utils.get_user_journeys(user_model)
         journey_names = ["#journeyItem%s" % journey.id for journey in args['journeys']]
         args['journey_names'] = ', '.join(journey_names)
+
         if request.method == 'POST':
             journey = [journey for journey in args['journeys'] if journey.journeyName == request.POST['journey_name']]
             form = delayRepayForms.DelayForm(request.POST)
@@ -120,16 +122,16 @@ def addJourney(request):
     args.update(csrf(request))
     if request.user.is_authenticated():
         if request.method == 'POST':
-            form = delayRepayForms.JourneyForm(request.POST)
+            form = delayRepayForms.JourneyForm(request.POST, request=request)
             if form.is_valid():
-                form.save(user=request.user)
+                form.save()
                 return HttpResponseRedirect('/')
             else:
                 args['form'] = form
                 return render_to_response('addJourney.html', args)
 
         else:
-            args['form'] = delayRepayForms.JourneyForm()
+            args['form'] = delayRepayForms.JourneyForm(request=request)
             return render_to_response('addJourney.html', args)
     else:
         return HttpResponseRedirect('/login')

@@ -4,6 +4,7 @@ Module which contains all of the forms for the site
 """
 from django import forms
 from models import UserData, Journey, Ticket, Delay, Station
+import utils as utils
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
@@ -164,7 +165,6 @@ class DelayForm(forms.ModelForm):
         cleaned_data = super(DelayForm, self).clean()
         msg = "Please select a journey or add a journey"
         if "journey_name" in cleaned_data:
-            print cleaned_data['journey_name']
             if cleaned_data['journey_name'] == "":
                 raise forms.ValidationError(
                     msg
@@ -175,15 +175,15 @@ class DelayForm(forms.ModelForm):
                 )
 
 
-
-
-
 class JourneyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(JourneyForm, self).__init__(*args, **kwargs)
+
     all_stations = Station.objects.all()
     validStations = [(station.name, station.name)for station in all_stations]
     validStations.sort()
 
-    journey_name = forms.CharField(max_length=200)
     departing_station = forms.ChoiceField(choices=validStations)
     arriving_station = forms.ChoiceField(choices=validStations)
 
@@ -194,7 +194,6 @@ class JourneyForm(forms.ModelForm):
     helper.label_class = 'col-sm-4'
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
-        Field('journey_name'),
         Field('departing_station'),
         Field('arriving_station'),
         FormActions(Submit('Add Journey', 'Add Journey', css_class='btn-primary'))
@@ -202,15 +201,18 @@ class JourneyForm(forms.ModelForm):
 
     class Meta(object):
         model = Journey
-        fields = ("journey_name", "departing_station", "arriving_station")
+        fields = ("departing_station", "arriving_station")
 
-    def save(self, commit=True, user=None):
+    def save(self, commit=True):
         journey = super(JourneyForm, self).save(commit=False)
-        journey.journeyName = self.cleaned_data['journey_name']
+        journey.journeyName = utils.create_journey_name(
+            self.cleaned_data['departing_station'],
+            self.cleaned_data['arriving_station']
+        )
         journey.departingStation = self.cleaned_data['departing_station']
         journey.arrivingStation = self.cleaned_data['arriving_station']
-        user_models = UserData.objects.filter(username=user)
-        journey.delayRepayUser = user_models[0]
+        user_model = utils.get_user_model_from_request(self.request)
+        journey.delayRepayUser = user_model
         if commit:
             journey.save()
 
@@ -225,6 +227,16 @@ class JourneyForm(forms.ModelForm):
             raise forms.ValidationError(
                 msg
             )
+
+        journey_name = utils.create_journey_name(cleaned_data['departing_station'], self.cleaned_data['arriving_station'])
+        user_model = utils.get_user_model_from_request(self.request)
+        if journey_name in utils.get_user_journeys(user_model):
+            raise forms.ValidationError(
+                "This journey is already added to your common journeys"
+            )
+
+
+
 
 
 class TicketForm(forms.ModelForm):
