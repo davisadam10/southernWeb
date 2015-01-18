@@ -3,21 +3,32 @@ from selenium import webdriver
 
 from django.test import TestCase, LiveServerTestCase
 from delayRepay.models import UserData, Station
+import delayRepay.utils as utils
 
 TEARDOWN_TIME = 0
 
 
-# Create your tests here.
-class UserModelTests(TestCase):
+class BaseDelayRepayTesting(TestCase):
     testUsers = ['Adam', 'Holly', 'Kelly', 'Ben']
+    test_stations = ['Earlswood (Surrey)', 'London Victoria']
+    password = 'testing'
 
     def setUp(self):
         for name in self.testUsers:
             user = UserData()
             user.first_name = "%s" % name
-            user.username = "User_%s" % name
+            user.username = "%s" % name
+            user.set_password(self.password)
             user.save()
 
+        for station_name in self.test_stations:
+            station = Station()
+            station.name = station_name
+            station.save()
+
+
+# Create your tests here.
+class UserModelTests(BaseDelayRepayTesting):
     def test_userCreation(self):
         names = [user.first_name for user in UserData.objects.all()]
         self.assertEquals(self.testUsers, names)
@@ -45,15 +56,7 @@ class UserModelTests(TestCase):
         self.assertEquals(ben_expected_friends, [friend.first_name for friend in ben.friends.all()])
 
 
-class Test_Stations(TestCase):
-    test_stations = ['Earlswood (Surrey)', 'London Victoria']
-
-    def setUp(self):
-        for station_name in self.test_stations:
-            station = Station()
-            station.name = station_name
-            station.save()
-
+class Test_Stations(BaseDelayRepayTesting):
     def test_all_stations(self):
         all_stations = Station.objects.all()
         stations_names = [station.name for station in all_stations]
@@ -130,3 +133,10 @@ class Test_Functional(LiveServerTestCase):
             self.selenium.find_element_by_id('id_departing_station').text
         )
 
+
+class TestUtils(BaseDelayRepayTesting):
+    def test_create_journey_name(self):
+        self.assertEquals(
+            'A_To_B',
+            utils.create_journey_name('A', 'B')
+        )
