@@ -180,14 +180,8 @@ class DelayForm(forms.ModelForm):
 
 class JourneyForm(forms.ModelForm):
     all_stations = Station.objects.all()
-    validStations = (
-        ("Earlswood (Surrey)", "Earlswood (Surrey)"),
-        ("Merstham", "Merstham"),
-        ("London Victoria", "London Victoria"),
-        ("London Bridge", "London Bridge"),
-        ("East Croydon", "East Croydon"),
-    )
     validStations = [(station.name, station.name)for station in all_stations]
+    validStations.sort()
 
     journey_name = forms.CharField(max_length=200)
     departing_station = forms.ChoiceField(choices=validStations)
