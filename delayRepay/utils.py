@@ -1,34 +1,90 @@
+"""
+# coding=utf-8
+Utils for delay repay
+"""
 __author__ = 'adam'
 import mechanize
 import delayRepay.models as models
 
+
+def create_journey_name(start_station, end_station):
+    """
+
+    :param start_station: the name of the station we start at
+    :type start_station: str
+    :param end_station: the name of the station we end at
+    :type end_station:  str
+    :return: the name for the journey
+    :rtype: str
+    """
+    return "%s_To_%s" % (start_station, end_station)
+
+
+def get_user_journeys(user_data):
+    """
+
+    :param user_data: the userData model for the user
+    :type user_data: model.UserData
+    :return: a list of all the users journeys
+    :rtype: list
+    """
+    return models.Journey.objects.filter(delayRepayUser=user_data)
+
+
+def get_user_model_from_request(request):
+    """
+
+    :param request: the request object from the view
+    :type request: django.http.HttpRequest
+    :return: the user model from the request supplied
+    :rtype: UserData
+    """
+
+    print request
+    if request.user.is_authenticated():
+        user_models = models.UserData.objects.filter(username=request.user)
+        if user_models:
+            return user_models[0]
+    return None
+
+
 def get_best_valid_ticket(user, date):
+    """ From all the users tickets, find a valid ticket for the journey date supplied.
+        If there are multiple tickets, find the one which cost the most, as to claim the maximum back.
+
+    :param user: the user model for current user
+    :type user: models.UserData
+    :param date: the date of the journey
+    :type date: datetime.date
+    :return: returns the best ticket if found
+    :rtype: Ticket
+    """
     all_tickets = models.Ticket.objects.filter(delayRepayUser=user)
-    validTicket = None
+    valid_ticket = None
     for ticket in all_tickets:
         if ticket.ticket_start_date <= date <= ticket.ticket_expiry_date:
-            if not validTicket:
-                validTicket = ticket
+            if not valid_ticket:
+                valid_ticket = ticket
 
-            if float(validTicket.cost) < float(ticket.cost):
-                validTicket = ticket
+            if float(valid_ticket.cost) < float(ticket.cost):
+                valid_ticket = ticket
 
-    return validTicket
+    return valid_ticket
 
 
 def submit_delay(request, delay, journey, debug=True):
     """
 
     :param request: the http request passed in
-    :type request:
+    :type request: django.http.HttpRequest
     :param delay: the delay model we are claiming for
     :type delay: models.Delay
     :param journey:
     :type journey: models.Journey
-    :param debug:
-    :type debug:
-    :return:
-    :rtype:
+    :param debug: if we are in debug mode do not actually submit the delay
+    :type debug: bool
+    :return: if the delay has been successfully submitted
+    :rtype: bool
     """
     user = models.UserData.objects.filter(username=request.user)[0]
     ticket = get_best_valid_ticket(user, delay.date)
@@ -87,10 +143,10 @@ def submit_delay(request, delay, journey, debug=True):
     main_form['photocard_id_1'] = user.photocard_id
 
     if not debug:
-        response = br.submit()
-        #text = response.read()
-        #temp_file = open("/home/adam/temp.html", "w")
-        #temp_file.write(text)
-        #temp_file.close()
+        br.submit()  # returns a response
+        # text = response.read()
+        # temp_file = open("/home/adam/temp.html", "w")
+        # temp_file.write(text)
+        # temp_file.close()
 
     return True
