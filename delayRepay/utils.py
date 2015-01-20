@@ -39,8 +39,6 @@ def get_user_model_from_request(request):
     :return: the user model from the request supplied
     :rtype: UserData
     """
-
-    print request
     if request.user.is_authenticated():
         user_models = models.UserData.objects.filter(username=request.user)
         if user_models:

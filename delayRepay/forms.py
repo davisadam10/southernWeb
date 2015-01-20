@@ -230,7 +230,8 @@ class JourneyForm(forms.ModelForm):
 
         journey_name = utils.create_journey_name(cleaned_data['departing_station'], self.cleaned_data['arriving_station'])
         user_model = utils.get_user_model_from_request(self.request)
-        if journey_name in utils.get_user_journeys(user_model):
+        journey_names = [journey.journeyName for journey in utils.get_user_journeys(user_model)]
+        if journey_name in journey_names:
             raise forms.ValidationError(
                 "This journey is already added to your common journeys"
             )
