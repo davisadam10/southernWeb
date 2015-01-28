@@ -236,6 +236,46 @@ class JourneyForm(forms.ModelForm):
                 "This journey is already added to your common journeys"
             )
 
+class FriendForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(FriendForm, self).__init__(*args, **kwargs)
+
+    friend_email = forms.EmailField()
+
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.form_action = '/addFriend/'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-sm-4'
+    helper.field_class = 'col-sm-4'
+    helper.layout = Layout(
+        Field('friend_email', id='id_friend_email'),
+        FormActions(Submit('Add Friend', 'Add Friend', css_class='btn-primary'))
+    )
+
+    class Meta(object):
+        fields = ("friend_email")
+
+    def clean(self):
+        cleaned_data = super(FriendForm, self).clean()
+        my_user = utils.get_user_model_from_request(self.request)
+        if my_user.email == cleaned_data['friend_email']:
+            msg = "Cant add your own email address as a friend"
+            raise forms.ValidationError(
+                msg
+            )
+
+        users = UserData.objects.filter(email=cleaned_data['friend_email'])
+        if not users:
+            msg = "No users matching email address provided found"
+            raise forms.ValidationError(
+                msg
+            )
+        else:
+            cleaned_data['friend_model'] = users[0]
+
+        return cleaned_data
 
 
 
