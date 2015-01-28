@@ -1,3 +1,7 @@
+"""
+coding=utf-8
+Unit tests and functional tests for delay repay
+"""
 import time
 from selenium import webdriver
 
@@ -73,6 +77,7 @@ class Test_Functional(LiveServerTestCase):
             user = UserData()
             user.first_name = "%s" % name
             user.username = "User_%s" % name
+            user.email = "%s@%s.com" % (user.first_name, user.first_name)
             user.set_password('testing')
             user.save()
 
@@ -132,6 +137,57 @@ class Test_Functional(LiveServerTestCase):
             expected,
             self.selenium.find_element_by_id('id_departing_station').text
         )
+
+    def add_friend(self, expected_email):
+        expected_url = self.index + '/addFriend/'
+        self.selenium.find_element_by_id('id_addFriend').click()
+        self.assertEquals(expected_url, self.selenium.current_url)
+
+        self.selenium.find_element_by_id('id_friend_email').send_keys(expected_email)
+        self.selenium.find_element_by_id('submit-id-add-friend').click()
+
+    def test_add_friend_valid(self):
+        self.login()
+        expected_email = 'Holly@Holly.com'
+        self.add_friend(expected_email)
+
+        adam = UserData.objects.filter(first_name='Adam')[0]
+
+        friends = adam.friends.all()
+        if not friends:
+            self.assertEquals([], friends, 'No Friends Were Added')
+
+        self.assertEquals(expected_email, friends[0].email)
+
+    def test_add_friend_add_self(self):
+        self.login()
+        expected_email = 'Adam@Adam.com'
+        self.add_friend(expected_email)
+
+        adam = UserData.objects.filter(first_name='Adam')[0]
+
+        friends = adam.friends.all()
+        if friends:
+            self.assertEquals([], friends, 'Friends Were Added')
+
+        expected_error = "Cant add your own email address as a friend"
+        errors = self.selenium.find_elements_by_class_name("alert-danger")
+        self.assertEquals(expected_error, errors[0].text)
+
+    def test_add_friend_invalid(self):
+        self.login()
+        expected_email = 'D@D.com'
+        self.add_friend(expected_email)
+
+        adam = UserData.objects.filter(first_name='Adam')[0]
+
+        friends = adam.friends.all()
+        if friends:
+            self.assertEquals([], friends, 'Friends Were Added')
+
+        expected_error = "No users matching email address provided found"
+        errors = self.selenium.find_elements_by_class_name("alert-danger")
+        self.assertEquals(expected_error, errors[0].text)
 
 
 class TestUtils(BaseDelayRepayTesting):
