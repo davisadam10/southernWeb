@@ -189,6 +189,16 @@ class Test_Functional(LiveServerTestCase):
         errors = self.selenium.find_elements_by_class_name("alert-danger")
         self.assertEquals(expected_error, errors[0].text)
 
+    def test_add_friend_twice(self):
+        self.login()
+        expected_email = 'Holly@Holly.com'
+        self.add_friend(expected_email)
+        self.add_friend(expected_email)
+
+        expected_error = "This person is already your friend"
+        errors = self.selenium.find_elements_by_class_name("alert-danger")
+        self.assertEquals(expected_error, errors[0].text)
+
 
 class TestUtils(BaseDelayRepayTesting):
     def test_create_journey_name(self):
