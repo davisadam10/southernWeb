@@ -100,6 +100,13 @@ def index(request):
 
                 delay.claimed = True
                 delay.save()
+                friends = user_model.friends.all()
+                for friend in friends:
+                    delay.claimed = False
+                    delay.pk = None
+                    delay.delayRepayUser = friend
+                    delay.save()
+
                 return HttpResponseRedirect('/delaySuccess')
             else:
                 args['form'] = form
