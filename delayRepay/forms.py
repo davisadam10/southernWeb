@@ -266,6 +266,13 @@ class FriendForm(forms.Form):
                 msg
             )
 
+        already_friends = [friend.email for friend in my_user.friends.all()]
+        if cleaned_data['friend_email'] in already_friends:
+            msg = "This person is already your friend"
+            raise forms.ValidationError(
+                msg
+            )
+
         users = UserData.objects.filter(email=cleaned_data['friend_email'])
         if not users:
             msg = "No users matching email address provided found"
