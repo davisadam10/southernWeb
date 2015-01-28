@@ -160,6 +160,37 @@ def addTicket(request):
     else:
         return HttpResponseRedirect('/login')
 
+
+def addFriend(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
+    args = {}
+    args['friends'] = []
+    args.update(csrf(request))
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = delayRepayForms.FriendForm(request.POST, request=request)
+            if form.is_valid():
+                user_model = utils.get_user_model_from_request(request)
+                cleaned_data = form.clean()
+                user_model.friends.add(cleaned_data['friend_model'])
+                user_model.save()
+                args['friends'] = [friend.username for friend in user_model.friends.all()]
+                args['form'] = delayRepayForms.FriendForm()
+                return render_to_response('addFriend.html', args)
+            else:
+                args['form'] = form
+                return render_to_response('addFriend.html', args)
+        else:
+            args['form'] = delayRepayForms.FriendForm()
+            return render_to_response('addFriend.html', args)
+    else:
+        return HttpResponseRedirect('/login')
+
+
 def noTicket(request):
     args = {}
     args.update(csrf(request))
