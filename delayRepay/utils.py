@@ -31,7 +31,7 @@ def create_journey_name(start_station, end_station):
     :return: the name for the journey
     :rtype: str
     """
-    return "%s_To_%s" % (cleanName(start_station), cleanName(end_station))
+    return "%s To %s" % (start_station, end_station)
 
 
 def get_user_journeys(user_data):
