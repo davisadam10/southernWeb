@@ -232,6 +232,6 @@ class Test_Functional(LiveServerTestCase):
 class TestUtils(BaseDelayRepayTesting):
     def test_create_journey_name(self):
         self.assertEquals(
-            'A_To_B',
+            'A To B',
             utils.create_journey_name('A', 'B')
         )
