@@ -42,7 +42,7 @@ def get_user_journeys(user_data):
     :return: a list of all the users journeys
     :rtype: list
     """
-    return models.Journey.objects.filter(delayRepayUser=user_data)
+    return models.Journey.objects.filter(delayRepayUser=user_data).order_by('journeyName')
 
 
 def get_user_model_from_request(request):
