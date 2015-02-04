@@ -19,8 +19,10 @@
 		</style>
         <script>
             $(function() {
-                $( "#datepicker" ).datepicker();
-                $( "#datepicker2" ).datepicker();
+                $( "#datepicker" ).datepicker({ dateFormat: "dd/mm/yy" });
+                $( "#datepicker" ).datepicker( "option", $.datepicker.regional[ "en-GB" ] );
+                $( "#datepicker2" ).datepicker({ dateFormat: "dd/mm/yy" });
+                $( "#datepicker2" ).datepicker( "option", $.datepicker.regional[ "en-GB" ] );
             });
         </script>
         <script>

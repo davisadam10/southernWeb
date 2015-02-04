@@ -119,6 +119,13 @@ class DelayForm(forms.ModelForm):
         ('Missed connection', 'Missed connection')
     ]
 
+    def __init__(self, *args, **kwargs):
+            super(DelayForm, self).__init__(*args, **kwargs)
+            self.fields['journey_date'].widget.format = '%d/%m/%Y'
+
+            # at the same time, set the input format on the date field like you want it:
+            self.fields['journey_date'].input_formats = ['%d/%m/%Y']
+
     delay = forms.ChoiceField(choices=delays)
     delay_reason = forms.ChoiceField(choices=delay_reasons)
 
