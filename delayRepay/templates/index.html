@@ -6,7 +6,7 @@
     <h2 ><p>Select A Journey</p></h2>
 	<div class="list-group">
         {% for journey in journeys %}
-			<a id="journeyItem{{ journey.id }}" href="#" class="list-group-item" data-value={{ journey.journeyName }}>{{ journey.journeyName }}</a>
+			<a id="journeyItem{{ journey.id }}" href="#" class="list-group-item" data-value={{ journey.id }}>{{ journey.journeyName }}</a>
 		{% endfor %}
 	</div>
     <form action="/addJourney" method="get">

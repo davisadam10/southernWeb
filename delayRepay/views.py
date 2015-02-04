@@ -89,11 +89,11 @@ def index(request):
         args['journey_names'] = ', '.join(journey_names)
 
         if request.method == 'POST':
-            journey = [journey for journey in args['journeys'] if journey.journeyName == request.POST['journey_name']]
+            journey = [journey for journey in args['journeys'] if journey.id == int(request.POST['journey_name'])]
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
-                delay = form.save(user=request.user)
-                success = utils.submit_delay(request, delay, journey[0], debug=False)
+                delay = form.save(user=request.user, journey=journey[0])
+                success = utils.submit_delay(request, delay, journey[0])
                 if not success:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
