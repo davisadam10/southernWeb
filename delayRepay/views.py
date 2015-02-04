@@ -102,10 +102,12 @@ def index(request):
                 delay.save()
                 friends = user_model.friends.all()
                 for friend in friends:
-                    delay.claimed = False
-                    delay.pk = None
-                    delay.delayRepayUser = friend
-                    delay.save()
+                    delays_on_date = utils.get_delays_for_date(friend, delay.date)
+                    if not delays_on_date:
+                        delay.claimed = False
+                        delay.pk = None
+                        delay.delayRepayUser = friend
+                        delay.save()
 
                 return render_to_response('delaySuccess.html', {'redirect': '/'})
             else:
