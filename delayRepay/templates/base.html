@@ -37,12 +37,26 @@
             <div id='sidebar'>
                 {% block sidebar %}
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a id="id_addTicket" href="/addTicket">Add Ticket</a></li>
-                    <li><a id="id_addFriend" href="/addFriend">Add Friend</a></li>
-                    <li><a id="id_unclaimedDelays" href="/unclaimedDelays">UnClaimed Delays</a></li>
-
-
+                    <li>
+                        <form action="/">
+                            <button id="id_home" style="width:120px;height:40px; type="submit" class="btn-primary">Home</button>
+						</form>
+                    </li>
+                    <li>
+                        <form action="/addTicket">
+                            <button id="id_addTicket" style="width:120px;height:40px; type="submit" class="btn-primary">Add Ticket</button>
+						</form>
+                    </li>
+                    <li>
+                        <form action="/addFriend">
+                            <button id="id_addFriend" style="width:120px;height:40px; type="submit" class="btn-primary">Add Friend</button>
+						</form>
+                    </li>
+                    <li>
+                        <form action="/unclaimedDelays">
+                            <button id="id_unclaimedDelays" style="width:120px;height:40px; type="submit" class="btn-primary">Unclaimed Delays</button>
+						</form>
+                    </li>
                 </ul>
                 {% endblock %}
             </div>
@@ -51,7 +65,9 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
-        <p>Click <a href="/logout/">here to logout</a></p>
+        <form action="/logout/">
+            <button id="id_logout" style="width:120px;height:40px; type="submit" class="btn-danger">Logout</button>
+        </form>
     </body>
 </html>
 
