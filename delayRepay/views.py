@@ -3,7 +3,7 @@
 Views for the delay repay app
 """
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 import forms as delayRepayForms
@@ -173,8 +173,7 @@ def addFriend(request):
     :param request:
     :return: :rtype:
     """
-    args = {}
-    args['friends'] = []
+    args = {'friends': []}
     args.update(csrf(request))
     if request.user.is_authenticated():
         if request.method == 'POST':
