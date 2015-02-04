@@ -18,8 +18,12 @@ def get_service_details(service):
 def is_service_cancelled(service):
     cancelled = False
     details = get_service_details(service)
-    if details.etd == 'Cancelled':
-        cancelled = True
+    try:
+        if details.etd == 'Cancelled':
+            cancelled = True
+    except:
+        pass
+
     return cancelled
 
 def is_service_delayed(service):
@@ -68,6 +72,9 @@ def get_services_arriving_from(depart_station, arrival_station):
                 train_services.append(service)
                 break
     return train_services
+
+def get_arrival_services(arrival_station):
+    return LDB.service.GetArrivalBoard(MAX_SERVICES, arrival_station)
 
 
 def getCancelledArrivingServices(arrivingStation):
@@ -132,3 +139,11 @@ for service in services:
     print cancelled
 '''
 #for services
+
+
+def findServiceArrival(station_short, serviceID):
+    services = get_arrival_services(station_short)
+    for service in services.trainServices.service:
+        print service
+        if service.serviceID == serviceID:
+            print service
