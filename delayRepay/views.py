@@ -107,7 +107,7 @@ def index(request):
                     delay.delayRepayUser = friend
                     delay.save()
 
-                return HttpResponseRedirect('/delaySuccess')
+                return render_to_response('delaySuccess.html', {'redirect': '/'})
             else:
                 args['form'] = form
                 return render_to_response('index.html', args)
@@ -116,7 +116,6 @@ def index(request):
             return render_to_response('index.html', args)
     else:
         return HttpResponseRedirect('/login')
-
 
 
 def addJourney(request):
@@ -199,6 +198,13 @@ def addFriend(request):
 
 
 def noTicket(request):
+    """
+
+    :param request:
+    :type request:
+    :return:
+    :rtype:
+    """
     args = {}
     args.update(csrf(request))
     if request.user.is_authenticated():
@@ -206,13 +212,6 @@ def noTicket(request):
     else:
         return HttpResponseRedirect('/')
 
-def delaySuccess(request):
-    args = {}
-    args.update(csrf(request))
-    if request.user.is_authenticated():
-        return render_to_response('delaySuccess.html', args)
-    else:
-        return HttpResponseRedirect('/')
 
 def logged_in(request):
     """

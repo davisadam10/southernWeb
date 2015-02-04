@@ -3,6 +3,13 @@
 {% block content %}
     <h2>Delay Submitted</h2>
     <p>Your delay claim has been successfully submitted! Check your email for confirmation</p>
+    <input type='hidden' id="id_redirect" value="{{ redirect }}" />
+	<script>
+	    function redirect(){
+            window.location.href = $('#id_redirect').val();
+	    }
 
+	    setTimeout(redirect, 2500); //2000 is equivalent to 2 seconds
+	</script>
 
 {% endblock %}
