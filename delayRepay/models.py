@@ -45,6 +45,7 @@ class Delay(models.Model):
     delay_reason = models.CharField(max_length=200)
     delayRepayUser = models.ForeignKey(UserData)
     claimed = models.BooleanField(default=False)
+    journey = models.ForeignKey(Journey)
 
 
 def get_image_path(instance, filename):

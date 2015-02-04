@@ -154,13 +154,14 @@ class DelayForm(forms.ModelForm):
         model = Delay
         fields = ("delay", "delay_reason", "journey_date", "start_time", "end_time")
 
-    def save(self, commit=True, user=None):
+    def save(self, commit=True, user=None, journey=None):
         delay = super(DelayForm, self).save(commit=False)
         delay.delay = self.cleaned_data['delay']
         delay.delay_reason = self.cleaned_data['delay_reason']
         delay.date = self.cleaned_data['journey_date']
         delay.startTime = self.cleaned_data['start_time']
         delay.endTime = self.cleaned_data['end_time']
+        delay.journey = journey
         user_models = UserData.objects.filter(username=user)
         delay.delayRepayUser = user_models[0]
         if commit:
