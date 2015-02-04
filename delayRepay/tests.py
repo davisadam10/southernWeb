@@ -3,10 +3,11 @@ coding=utf-8
 Unit tests and functional tests for delay repay
 """
 import time
+import datetime
 from selenium import webdriver
 
 from django.test import TestCase, LiveServerTestCase
-from delayRepay.models import UserData, Station
+from delayRepay.models import UserData, Station, Journey, Delay
 import delayRepay.utils as utils
 
 TEARDOWN_TIME = 0
