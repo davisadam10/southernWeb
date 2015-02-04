@@ -22,9 +22,35 @@ class BaseDelayRepayTesting(TestCase):
         for name in self.testUsers:
             user = UserData()
             user.first_name = "%s" % name
-            user.username = "%s" % name
-            user.set_password(self.password)
+            user.username = "User_%s" % name
+            user.email = "%s@%s.com" % (user.first_name, user.first_name)
+            user.set_password('testing')
             user.save()
+
+            journey = Journey()
+            journey.journeyName = utils.create_journey_name(self.test_stations[0], self.test_stations[1])
+            journey.arrivingStation = self.test_stations[0]
+            journey.departingStation = self.test_stations[1]
+            journey.delayRepayUser = user
+            journey.save()
+            for count in xrange(0, 10):
+                delay = Delay()
+                date = datetime.datetime.now().date()
+                if count % 2 == 0:
+                    delay.date = date
+                else:
+                    delay.date = datetime.datetime(date.year+1, date.month+1, date.day+1).date()
+                delay.startTime = datetime.datetime.now().time()
+                delay.endTime = datetime.datetime.now().time()
+                delay.delay = '39-59 mins'
+                delay.delay_reason = 'Train Cancelled'
+                delay.delayRepayUser = user
+                claimed = False
+                if count % 2 == 0:
+                    claimed = True
+                delay.claimed = claimed
+                delay.journey = journey
+                delay.save()
 
         for station_name in self.test_stations:
             station = Station()
@@ -235,3 +261,8 @@ class TestUtils(BaseDelayRepayTesting):
             'A To B',
             utils.create_journey_name('A', 'B')
         )
+
+    def test_get_todays_delays(self):
+        adam = UserData.objects.filter(first_name='Adam')[0]
+        delays = utils.get_delays_for_today(adam)
+        self.assertEquals(5, len(delays))
