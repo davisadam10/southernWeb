@@ -185,3 +185,19 @@ def get_delays_for_today(user_data):
     :rtype: list
     """
     return get_delays_for_date(user_data, datetime.now().date())
+
+
+def get_station_from_name(station_name):
+    """
+
+    :param station_name: the name of the station
+    :type station_name: string
+    :return: the station model object with the name provided
+    :rtype: models.Station
+    """
+    station = None
+    stations = models.Station.objects.filter(name=station_name)
+    if stations:
+        station = stations[0]
+    return station
+
