@@ -6,6 +6,7 @@ __author__ = 'adam'
 import mechanize
 import delayRepay.models as models
 
+DEBUG = False
 
 def cleanName(name):
     """
@@ -83,7 +84,7 @@ def get_best_valid_ticket(user, date):
     return valid_ticket
 
 
-def submit_delay(request, delay, journey, debug=True):
+def submit_delay(request, delay, journey):
     """
 
     :param request: the http request passed in
@@ -92,8 +93,6 @@ def submit_delay(request, delay, journey, debug=True):
     :type delay: models.Delay
     :param journey:
     :type journey: models.Journey
-    :param debug: if we are in debug mode do not actually submit the delay
-    :type debug: bool
     :return: if the delay has been successfully submitted
     :rtype: bool
     """
@@ -153,7 +152,7 @@ def submit_delay(request, delay, journey, debug=True):
     main_form['compensation'] = [compensation, ]
     main_form['photocard_id_1'] = user.photocard_id
 
-    if not debug:
+    if not DEBUG:
         br.submit()  # returns a response
         # text = response.read()
         # temp_file = open("/home/adam/temp.html", "w")
