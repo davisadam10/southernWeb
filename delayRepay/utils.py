@@ -3,6 +3,7 @@
 Utils for delay repay
 """
 __author__ = 'adam'
+from datetime import datetime
 import mechanize
 import delayRepay.models as models
 
@@ -160,3 +161,27 @@ def submit_delay(request, delay, journey):
         # temp_file.close()
 
     return True
+
+
+def get_delays_for_date(user_data, date):
+    """
+
+    :param user_data: userData model for the user
+    :type user_data: models.UserData
+    :param date: the date you want to get the users delays for
+    :type date: datetime.date
+    :return: a list of delays for the given date
+    :rtype: list
+    """
+    return models.Delay.objects.filter(delayRepayUser=user_data, date=date)
+
+
+def get_delays_for_today(user_data):
+    """
+
+    :param user_data: userData model for the user
+    :type user_data: models.UserData
+    :return: a list of delays for today
+    :rtype: list
+    """
+    return get_delays_for_date(user_data, datetime.now().date())
