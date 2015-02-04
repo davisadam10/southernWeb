@@ -199,6 +199,12 @@ class Test_Functional(LiveServerTestCase):
         errors = self.selenium.find_elements_by_class_name("alert-danger")
         self.assertEquals(expected_error, errors[0].text)
 
+    def test_unclaimed_delays(self):
+        self.login()
+        expected_url = self.index + '/unclaimedDelays/'
+        self.selenium.find_element_by_id('id_unclaimedDelays').click()
+        self.assertEquals(expected_url, self.selenium.current_url)
+
 
 class TestUtils(BaseDelayRepayTesting):
     def test_create_journey_name(self):
