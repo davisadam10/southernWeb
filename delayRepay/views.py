@@ -242,3 +242,38 @@ def logout(request):
     """
     auth.logout(request)
     return HttpResponseRedirect('/')
+
+
+def unclaimedDelays(request):
+    """
+
+    :param request:
+    :type request:
+    :return:
+    :rtype:
+    """
+    args = {}
+    args.update(csrf(request))
+    if request.user.is_authenticated():
+        user_model = utils.get_user_model_from_request(request)
+        if request.method == 'POST':
+            delay_id = request.POST.get('delay_Id')
+            delay = models.Delay.objects.filter(id=delay_id)[0]
+            success = utils.submit_delay(request, delay, delay.journey)
+            if success:
+                delay.claimed = True
+                delay.save()
+                return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
+
+        all_unclaimed = models.Delay.objects.filter(delayRepayUser=user_model, claimed=False)
+        args['unclaimed_claimable'] = [
+            delay for delay in all_unclaimed if
+            utils.get_best_valid_ticket(user_model, delay.date)
+        ]
+        args['unclaimed_noTicket'] = [
+            delay for delay in all_unclaimed if
+            not utils.get_best_valid_ticket(user_model, delay.date)
+        ]
+        return render_to_response('unclaimedDelays.html', args)
+    else:
+        return HttpResponseRedirect('/')
