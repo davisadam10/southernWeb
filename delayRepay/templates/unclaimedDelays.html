@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h1 >Unclaimed & Shared Delays</h1>
+    <h3 >Claimable Delays</h3>
+    {% for delay in unclaimed_claimable %}
+        <p>
+            <input id="delayItem{{ delay.id }}" class="btn-primary" type="submit" value="  Claim  " onclick="window.location.href='/'">
+            {{ delay.journey.journeyName }} On {{ delay.date|date:"d/m/Y" }}
+        </p>
+    {% endfor %}
+
+{% endblock %}
+
