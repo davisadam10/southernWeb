@@ -81,10 +81,32 @@ class Test_Functional(LiveServerTestCase):
             user.set_password('testing')
             user.save()
 
+            journey = Journey()
+            journey.journeyName = utils.create_journey_name(self.test_stations[0], self.test_stations[1])
+            journey.arrivingStation = self.test_stations[0]
+            journey.departingStation = self.test_stations[1]
+            journey.delayRepayUser = user
+            journey.save()
+            for count in xrange(0, 10):
+                delay = Delay()
+                delay.date = datetime.datetime.now().date()
+                delay.startTime = datetime.datetime.now().time()
+                delay.endTime = datetime.datetime.now().time()
+                delay.delay = '39-59 mins'
+                delay.delay_reason = 'Train Cancelled'
+                delay.delayRepayUser = user
+                claimed = False
+                if count % 2 == 0:
+                    claimed = True
+                delay.claimed = claimed
+                delay.journey = journey
+                delay.save()
+
         for station_name in self.test_stations:
             station = Station()
             station.name = station_name
             station.save()
+
 
         self.selenium = webdriver.Chrome()
         self.selenium.maximize_window()
