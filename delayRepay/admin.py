@@ -13,7 +13,7 @@ class UserDataAdmin(admin.ModelAdmin):
 
 class JourneyAdmin(admin.ModelAdmin):
     list_display = (
-        "journeyName", "departingStation", "arrivingStation", "delayRepayUser"
+        "journeyName", "departingStation", "arrivingStation", "delayRepayUser", 'id'
     )
 
 
@@ -25,7 +25,7 @@ class TicketAdmin(admin.ModelAdmin):
 
 class DelayAdmin(admin.ModelAdmin):
     list_display = (
-        "delay", "delay_reason", "date", "startTime", "endTime", 'delayRepayUser', 'claimed'
+        "delay", "delay_reason", "date", "startTime", "endTime", 'delayRepayUser', 'claimed', 'journey'
     )
 
 
