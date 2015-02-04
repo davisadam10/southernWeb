@@ -33,6 +33,12 @@ class Journey(models.Model):
     arrivingStation = models.CharField(max_length=200)
     delayRepayUser = models.ForeignKey(UserData)
 
+    def __str__(self):
+        return "%s -> %s" % (
+            self.delayRepayUser.get_username(),
+            self.journeyName
+        )
+
 
 class Delay(models.Model):
     """
