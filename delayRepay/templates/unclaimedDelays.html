@@ -5,10 +5,28 @@
   <h1 >Unclaimed & Shared Delays</h1>
     <h3 >Claimable Delays</h3>
     {% for delay in unclaimed_claimable %}
-        <p>
-            <input id="delayItem{{ delay.id }}" class="btn-primary" type="submit" value="  Claim  " onclick="window.location.href='/'">
-            {{ delay.journey.journeyName }} On {{ delay.date|date:"d/m/Y" }}
-        </p>
+        <form class="form-inline"  method="POST" action="/unclaimedDelays/">
+          {% csrf_token %}
+          <div class="form-group">
+            <h4>{{ delay.journey.journeyName }} On {{ delay.date|date:"d/m/Y"}}</h4>
+              <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
+          </div>
+          <button type="submit" class="btn-primary">Claim Delay</button>
+        </form>
+        <br>
+    {% endfor %}
+
+    <h3 >Delays Missing Ticket</h3>
+    {% for delay in unclaimed_noTicket %}
+        <form class="form-inline"  method="POST" action="/unclaimedDelays/">
+          {% csrf_token %}
+          <div class="form-group">
+            <h4>{{ delay.journey.journeyName }} On {{ delay.date|date:"d/m/Y"}}</h4>
+              <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
+          </div>
+          <button type="submit" class="btn-primary">Add Ticket</button>
+        </form>
+        <br>
     {% endfor %}
 
 {% endblock %}
