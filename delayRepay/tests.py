@@ -254,6 +254,19 @@ class Test_Functional(LiveServerTestCase):
         self.selenium.find_element_by_id('id_unclaimedDelays').click()
         self.assertEquals(expected_url, self.selenium.current_url)
 
+    def test_unclaimed_delays_no_ticket(self):
+        self.login()
+        expected_url = self.index + '/unclaimedDelays/'
+        delay_id = 2
+
+        self.selenium.find_element_by_id('id_unclaimedDelays').click()
+        self.assertEquals(expected_url, self.selenium.current_url)
+
+        self.selenium.find_element_by_id('id_no_ticket_2').click()
+        delays = Delay.objects.filter(id=delay_id)
+        self.assertEquals([], list(delays))
+
+
 
 class TestUtils(BaseDelayRepayTesting):
     def test_create_journey_name(self):

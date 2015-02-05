@@ -26,7 +26,8 @@
               <p>{{ delay.delay_reason}}</p>
               <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
           </div>
-          <button type="submit" class="btn-primary">Add Ticket</button>
+          <button id ='id_submit_delay_{{ delay.id }}' name="submit" type="submit" value='submit' class="btn-primary">Add Ticket</button>
+          <button id ='id_no_ticket_{{ delay.id }}' name="no_ticket" type="submit" value='no_ticket' class="btn-danger">No Ticket</button>
         </form>
         <br>
     {% endfor %}
