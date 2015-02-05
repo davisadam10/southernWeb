@@ -292,10 +292,19 @@ class FriendForm(forms.Form):
 
         return cleaned_data
 
-
-
-
 class TicketForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+            super(TicketForm, self).__init__(*args, **kwargs)
+            self.fields['ticket_start_date'].widget.format = '%d/%m/%Y'
+
+            # at the same time, set the input format on the date field like you want it:
+            self.fields['ticket_start_date'].input_formats = ['%d/%m/%Y']
+
+            self.fields['ticket_expiry_date'].widget.format = '%d/%m/%Y'
+
+            # at the same time, set the input format on the date field like you want it:
+            self.fields['ticket_expiry_date'].input_formats = ['%d/%m/%Y']
+
     valid_ticket_types = (
         ("monthly", 'monthly'),
         ("yearly", 'yearly'),
