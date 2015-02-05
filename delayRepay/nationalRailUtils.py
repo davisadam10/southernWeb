@@ -150,3 +150,16 @@ def findServiceArrival(station_short, serviceID):
         print service
         if service.serviceID == serviceID:
             print service
+
+'''
+services = get_services_arriving_from(
+                        'LBG',
+                        'ELD'
+                    )
+
+services2 = get_services_from_to(
+                        'LBG',
+                        'ELD'
+                    )
+'''
+
