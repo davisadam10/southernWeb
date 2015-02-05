@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, time
 import suds
 from suds.sax.element import Element
 
@@ -91,12 +91,15 @@ def getServiceDepartDetails(serviceID):
     details = LDB.service.GetServiceDetails(serviceID)
     journeyInfo['journeyDate'] = datetime.now().date()
     journeyInfo['departingStation'] = details.previousCallingPoints.callingPointList[0].callingPoint[0].crs
-    journeyInfo['startTime'] = details.previousCallingPoints.callingPointList[0].callingPoint[0].st
+
+    hour, minute = details.previousCallingPoints.callingPointList[0].callingPoint[0].st.split(':')
+    journeyInfo['startTime'] = time(int(hour), int(minute))
 
     if details.previousCallingPoints.callingPointList[0].callingPoint[0].at == "On time":
         journeyInfo['actualStartTime'] = journeyInfo['startTime']
     else:
-        journeyInfo['actualStartTime'] = journeyInfo['startTime'] = details.previousCallingPoints.callingPointList[0].callingPoint[0].at
+        hour, minute = details.previousCallingPoints.callingPointList[0].callingPoint[0].at.split(':')
+        journeyInfo['actualStartTime'] = journeyInfo['startTime'] = time(int(hour), int(minute))
 
     return journeyInfo
 
