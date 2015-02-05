@@ -1,6 +1,6 @@
 __author__ = 'adam'
 
-from datetime import datetime, time
+from datetime import datetime, time, date
 from django.core.management.base import BaseCommand
 import delayRepay.models as models
 import delayRepay.utils as utils
@@ -9,7 +9,15 @@ import delayRepay.nationalRailUtils as nationalRailUtils
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        timeNow = datetime.now().time()
+        endTime = time(23, 59)
+        startTime = time(5, 00)
 
+        if not endTime > timeNow > startTime:
+            print 'Trains have stopped running'
+            return
+        else:
+            print 'Trains are running checking for delays'
         users = models.UserData.objects.all()
         for user in users:
             delay_found = False
