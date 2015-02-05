@@ -9,11 +9,11 @@ import delayRepay.nationalRailUtils as nationalRailUtils
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        timeNow = datetime.now().time()
-        endTime = time(23, 59)
-        startTime = time(5, 00)
+        time_now = datetime.now().time()
+        train_end_time = time(23, 59)
+        train_start_time = time(5, 00)
 
-        if not endTime > timeNow > startTime:
+        if not train_end_time > time_now > train_start_time:
             print 'Trains have stopped running'
             return
         else:
