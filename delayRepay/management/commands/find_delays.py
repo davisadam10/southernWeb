@@ -15,6 +15,8 @@ class Command(BaseCommand):
             delay_found = False
             already_claimed_today = utils.get_delays_for_today(user)
             journeys = utils.get_user_journeys(user)
+            if already_claimed_today:
+                print "%s Has Already Made A Claim Today" % user.forename
             for journey in journeys:
                 if not delay_found and not already_claimed_today:
                     arriving_station = utils.get_station_from_name(journey.arrivingStation)
