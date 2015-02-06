@@ -7,7 +7,7 @@ token = os.getenv('NATIONAL_RAIL_TOKEN')
 WSDL_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/wsdl.aspx"
 LDB = suds.client.Client(WSDL_URL, soapheaders=Element('AccessToken').insert(Element('TokenValue').setText(token)))
 
-MAX_SERVICES = 200
+MAX_SERVICES = 15
 MAX_RESULTS = 1
 
 
@@ -95,11 +95,14 @@ def getServiceDepartDetails(serviceID):
     hour, minute = details.previousCallingPoints.callingPointList[0].callingPoint[0].st.split(':')
     journeyInfo['startTime'] = time(int(hour), int(minute))
 
-    if details.previousCallingPoints.callingPointList[0].callingPoint[0].at == "On time":
-        journeyInfo['actualStartTime'] = journeyInfo['startTime']
+    if 'at' in details.previousCallingPoints.callingPointList[0].callingPoint[0]:
+        if details.previousCallingPoints.callingPointList[0].callingPoint[0].at == "On time":
+            journeyInfo['actualStartTime'] = journeyInfo['startTime']
+        else:
+            hour, minute = details.previousCallingPoints.callingPointList[0].callingPoint[0].at.split(':')
+            journeyInfo['actualStartTime'] = journeyInfo['startTime'] = time(int(hour), int(minute))
     else:
-        hour, minute = details.previousCallingPoints.callingPointList[0].callingPoint[0].at.split(':')
-        journeyInfo['actualStartTime'] = journeyInfo['startTime'] = time(int(hour), int(minute))
+        journeyInfo['actualStartTime'] = journeyInfo['startTime']
 
     return journeyInfo
 
