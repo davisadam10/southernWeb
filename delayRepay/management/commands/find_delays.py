@@ -97,6 +97,9 @@ class Command(BaseCommand):
                                             newDelay.pk = None
                                             newDelay.delayRepayUser = friend
                                             newDelay.save()
+            if not already_claimed_today:
+                if not delay_found:
+                    print 'No Cancelled Trains Found For %s' % user.forename
 
 
 
