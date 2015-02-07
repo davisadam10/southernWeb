@@ -56,7 +56,8 @@ def login(request):
         password = request.POST.get('password', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
-            auth.login(request, user)
+            if user.is_active:
+                auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
             form = delayRepayForms.LoginForm(request.POST)
@@ -79,7 +80,7 @@ def index(request):
     """
     args = {}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         user_model = utils.get_user_model_from_request(request)
         if not user_model:
             return HttpResponseRedirect('/login')
@@ -128,7 +129,7 @@ def addJourney(request):
     """
     args = {}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         if request.method == 'POST':
             form = delayRepayForms.JourneyForm(request.POST, request=request)
             if form.is_valid():
@@ -153,7 +154,7 @@ def addTicket(request):
     """
     args = {}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         if request.method == 'POST':
             form = delayRepayForms.TicketForm(request.POST, request.FILES)
             if form.is_valid():
@@ -177,7 +178,7 @@ def addFriend(request):
     """
     args = {'friends': []}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         if request.method == 'POST':
             form = delayRepayForms.FriendForm(request.POST, request=request)
             if form.is_valid():
@@ -208,7 +209,7 @@ def noTicket(request):
     """
     args = {}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         return render_to_response('noTicket.html', args)
     else:
         return HttpResponseRedirect('/')
@@ -220,7 +221,7 @@ def logged_in(request):
     :param request:
     :return: :rtype:
     """
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         return HttpResponseRedirect('/')
     else:
         return HttpResponseRedirect('/login')
@@ -255,7 +256,7 @@ def unclaimedDelays(request):
     """
     args = {}
     args.update(csrf(request))
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_active:
         user_model = utils.get_user_model_from_request(request)
         if request.method == 'POST':
             if 'no_ticket' in request.POST:
