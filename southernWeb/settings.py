@@ -96,3 +96,10 @@ AWS_STORAGE_BUCKET_NAME="southernwebdelayrepay"
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 
+POSTMARK_API_KEY = os.getenv('POSTMARK_API_KEY')
+POSTMARK_SENDER = 'admin@southern-fail.co.uk'
+POSTMARK_TEST_MODE = False
+EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
+
+
+
