@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 import delayRepay.models as models
 import delayRepay.utils as utils
 import delayRepay.nationalRailUtils as nationalRailUtils
+from django.core.mail import send_mail
 
 
 class Command(BaseCommand):
@@ -89,6 +90,11 @@ class Command(BaseCommand):
                                     newDelay.date = datetime.now().date()
                                     newDelay.save()
                                     delay_found = True
+                                    send_mail(
+                                        'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
+                                        'admin@southern-fail.co.uk',
+                                        [str(user.email)]
+                                    )
                                     friends = user.friends.all()
                                     for friend in friends:
                                         delays_on_date = utils.get_delays_for_date(friend, newDelay.date)
@@ -97,6 +103,11 @@ class Command(BaseCommand):
                                             newDelay.pk = None
                                             newDelay.delayRepayUser = friend
                                             newDelay.save()
+                                            send_mail(
+                                                'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
+                                                'admin@southern-fail.co.uk',
+                                                [str(friend.email)]
+                                            )
             if not already_claimed_today:
                 if not delay_found:
                     print 'No Cancelled Trains Found For %s' % user.forename
