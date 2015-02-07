@@ -1,6 +1,6 @@
 __author__ = 'adam'
 
-from datetime import datetime, time, date
+from datetime import datetime, time
 from django.core.management.base import BaseCommand
 import delayRepay.models as models
 import delayRepay.utils as utils
