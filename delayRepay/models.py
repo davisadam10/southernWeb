@@ -53,6 +53,17 @@ class Delay(models.Model):
     claimed = models.BooleanField(default=False)
     journey = models.ForeignKey(Journey)
 
+    def __str__(self):
+        output = "Date: %s\n" % str(self.date)
+        output += "Start Time: %s\n" % str(self.startTime)
+        output += "End Time: %s\n" % str(self.endTime)
+        output += "Delay Length: %s\n" % str(self.delay)
+        output += "Delay Reason: %s\n" % str(self.delay_reason)
+        output += "Departing Station: %s\n" % str(self.journey.departingStation)
+        output += "Arriving Station: %s\n" % str(self.journey.arrivingStation)
+        return output
+
+
 
 def get_image_path(instance, filename):
     return os.path.join(
