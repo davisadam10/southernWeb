@@ -10,6 +10,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
 from crispy_forms.bootstrap import FormActions
 import datetime
+from django.core.mail import send_mail
 
 
 class DelayRepayUserRegForm(UserCreationForm):
@@ -78,8 +79,14 @@ class DelayRepayUserRegForm(UserCreationForm):
         user.county = self.cleaned_data['county']
         user.postcode = self.cleaned_data['postcode']
         user.photocard_id = self.cleaned_data['photocard_id']
+        user.is_active = False
         if commit:
             user.save()
+            send_mail(
+                'Welcome!', 'Hi %s,\n\nYour application has been received please allow 24 hours for activation\n\nwww.southern-fail.co.uk\n\n' % user.forename,
+                'admin@southern-fail.co.uk',
+                [str(user.email)]
+            )
 
         return user
 
