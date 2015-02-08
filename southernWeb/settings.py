@@ -37,8 +37,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'delayRepay',
     'crispy_forms',
+    'delayRepayRest',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,6 +102,11 @@ POSTMARK_API_KEY = os.getenv('POSTMARK_API_KEY')
 POSTMARK_SENDER = 'admin@southern-fail.co.uk'
 POSTMARK_TEST_MODE = False
 EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
+}
 
 
 
