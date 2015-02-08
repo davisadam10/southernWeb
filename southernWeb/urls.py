@@ -17,7 +17,6 @@ router.register(r'rest/users', restViews.UserViewSet)
 urlpatterns = patterns(
     '',
     # Examples:
-    url(r'^', include(router.urls)),
     url(r'^$', 'delayRepay.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
 
@@ -31,6 +30,7 @@ urlpatterns = patterns(
     url(r'^noTicket/$', 'delayRepay.views.noTicket', name='noTicket'),
     url(r'^register/$', 'delayRepay.views.register_user', name='invalid_login'),
     url(r'^register_success/$', 'delayRepay.views.register_success', name='invalid_login'),
+    url(r'^', include(router.urls)),
 
 
 
