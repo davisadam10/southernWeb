@@ -5,13 +5,19 @@ Urls used for the delay repay app
 
 from django.conf import settings
 from django.conf.urls import patterns, include, url, static
-
+from rest_framework import routers
 from django.contrib import admin
 admin.autodiscover()
+
+from delayRepayRest import views as restViews
+router = routers.DefaultRouter()
+router.register(r'rest/users', restViews.UserViewSet)
+
 
 urlpatterns = patterns(
     '',
     # Examples:
+    url(r'^', include(router.urls)),
     url(r'^$', 'delayRepay.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
 
