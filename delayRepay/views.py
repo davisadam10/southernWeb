@@ -259,7 +259,7 @@ def unclaimedDelays(request):
     if request.user.is_authenticated() and request.user.is_active:
         user_model = utils.get_user_model_from_request(request)
         if request.method == 'POST':
-            if 'no_ticket' in request.POST:
+            if 'no_ticket' or 'remove_ticket' in request.POST:
                 delay_id = request.POST.get('delay_Id')
                 delay = models.Delay.objects.filter(id=delay_id)[0]
                 delay.delete()
