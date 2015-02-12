@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Already Claimed</h2>
+    <p>I'm afraid you have already claimed on this date</p>
+    <input type='hidden' id="id_redirect" value="{{ redirect }}" />
+	<script>
+	    function redirect(){
+            window.location.href = $('#id_redirect').val();
+	    }
+
+	    setTimeout(redirect, 2500); //2000 is equivalent to 2 seconds
+	</script>
+
+{% endblock %}

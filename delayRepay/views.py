@@ -94,6 +94,10 @@ def index(request):
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
+                already_claimed = [claimed_delay for claimed_delay in utils.get_delays_for_date(user_model, delay.date) if claimed_delay.claimed]
+                if already_claimed:
+                    delay.delete()
+                    return render_to_response('alreadyClaimed.html', {'redirect': '/'})
                 success = utils.submit_delay(request, delay, journey[0])
                 if not success:
                     delay.delete()
@@ -259,19 +263,26 @@ def unclaimedDelays(request):
     if request.user.is_authenticated() and request.user.is_active:
         user_model = utils.get_user_model_from_request(request)
         if request.method == 'POST':
-            if 'no_ticket' or 'remove_ticket' in request.POST:
+            no_ticket = 'no_ticket' in request.POST.keys()
+            remove_ticket = 'remove_ticket' in request.POST.keys()
+            if no_ticket or remove_ticket:
                 delay_id = request.POST.get('delay_Id')
                 delay = models.Delay.objects.filter(id=delay_id)[0]
                 delay.delete()
                 return HttpResponseRedirect('/unclaimedDelays')
 
             delay_id = request.POST.get('delay_Id')
-            delay = models.Delay.objects.filter(id=delay_id)[0]
-            success = utils.submit_delay(request, delay, delay.journey)
-            if success:
-                delay.claimed = True
-                delay.save()
-                return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
+            new_delay = models.Delay.objects.filter(id=delay_id)[0]
+            already_claimed = [delay for delay in utils.get_delays_for_date(user_model, new_delay.date) if delay.claimed]
+            if not already_claimed:
+                success = utils.submit_delay(request, new_delay, new_delay.journey)
+                if success:
+                    new_delay.claimed = True
+                    new_delay.save()
+                    return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
+
+            new_delay.delete()
+            return render_to_response('alreadyClaimed.html', {'redirect': '/unclaimedDelays'})
 
         all_unclaimed = models.Delay.objects.filter(delayRepayUser=user_model, claimed=False)
         args['unclaimed_claimable'] = [

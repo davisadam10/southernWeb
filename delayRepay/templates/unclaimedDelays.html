@@ -13,7 +13,7 @@
               <p>{{ delay.delay_reason}}</p>
               <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
           </div>
-          <button type="submit" class="btn-primary">Claim Delay</button>
+          <button id ='id_claim_delay_{{ delay.id }}' name="claim_delay" type="submit" value='claim' class="btn-primary">Claim Delay</button>
           <button id ='id_remove_delay_{{ delay.id }}' name="remove_ticket" type="submit" value='no_ticket' class="btn-danger">Delete Delay</button>
         </form>
         <br>
