@@ -1,16 +1,22 @@
 __author__ = 'adam'
 
 
+import os
 from django.core.management.base import BaseCommand
 import delayRepay.models as models
-from django.core.mail import send_mail
+from postmark import PMMail
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         user = models.UserData.objects.filter(username='davisadam10')[0]
-        send_mail(
-            'Test', 'Testing the email',
-            'admin@southern-fail.co.uk',
-            [str(user.email)]
+        message = PMMail(
+            api_key=os.environ.get('POSTMARK_API_TOKEN'),
+            subject="Test",
+            sender="admin@southern-fail.co.uk",
+            to=str(user.email),
+            text_body="Hello",
+            tag="testEmail"
         )
+
+        message.send()
