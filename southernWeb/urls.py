@@ -14,6 +14,7 @@ router = routers.DefaultRouter()
 router.register(r'rest/users', restViews.UserViewSet)
 
 
+
 urlpatterns = patterns(
     '',
     # Examples:
@@ -31,6 +32,10 @@ urlpatterns = patterns(
     url(r'^register/$', 'delayRepay.views.register_user', name='invalid_login'),
     url(r'^register_success/$', 'delayRepay.views.register_success', name='invalid_login'),
     url(r'^', include(router.urls)),
+    url(r'^rest/user/$', restViews.UserView.as_view(), name='UserView'),
+    url(r'^rest/friends/$', restViews.FriendsView.as_view(), name='FriendsView'),
+    url(r'^rest/unclaimedDelays/$', restViews.UnclaimedDelaysView.as_view(), name='UnclaimedDelays'),
+    url(r'^rest/journeys/$', restViews.JourneysView.as_view(), name='Journeys'),
 
 
 
