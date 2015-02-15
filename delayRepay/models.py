@@ -63,6 +63,36 @@ class Delay(models.Model):
         output += "Arriving Station: %s\n" % str(self.journey.arrivingStation)
         return output
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+
+        if self.date != other.date:
+            return False
+
+        if self.startTime != other.startTime:
+            return False
+
+        if self.endTime != other.endTime:
+            return False
+
+        if self.delay != other.delay:
+            return False
+
+        if self.delay_reason != other.delay_reason:
+            return False
+
+        if self.journey.journeyName != other.journey.journeyName:
+            return False
+
+        if self.delayRepayUser.username != other.delayRepayUser.username:
+            return False
+
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
 
 
 def get_image_path(instance, filename):
