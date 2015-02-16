@@ -88,26 +88,32 @@ class Command(BaseCommand):
                                     newDelay.delayRepayUser = user
                                     newDelay.journey = journey
                                     newDelay.date = datetime.now().date()
-                                    newDelay.save()
-                                    delay_found = True
-                                    send_mail(
-                                        'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
-                                        'admin@southern-fail.co.uk',
-                                        [str(user.email)]
-                                    )
-                                    friends = user.friends.all()
-                                    for friend in friends:
-                                        delays_on_date = utils.get_delays_for_date(friend, newDelay.date)
-                                        if not delays_on_date:
-                                            newDelay.claimed = False
-                                            newDelay.pk = None
-                                            newDelay.delayRepayUser = friend
-                                            newDelay.save()
-                                            send_mail(
-                                                'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
-                                                'admin@southern-fail.co.uk',
-                                                [str(friend.email)]
-                                            )
+                                    if not utils.check_delay_already_found(user, newDelay):
+                                        newDelay.save()
+                                        delay_found = True
+                                        send_mail(
+                                            'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
+                                            'admin@southern-fail.co.uk',
+                                            [str(user.email)]
+                                        )
+
+                                        friends = user.friends.all()
+                                        for friend in friends:
+                                            delays_on_date = utils.get_delays_for_date(friend, newDelay.date)
+                                            if not delays_on_date:
+                                                newDelay.claimed = False
+                                                newDelay.pk = None
+                                                newDelay.delayRepayUser = friend
+                                                if not utils.check_delay_already_found(friend, newDelay):
+                                                    newDelay.save()
+                                                    send_mail(
+                                                        'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
+                                                        'admin@southern-fail.co.uk',
+                                                        [str(friend.email)]
+                                                    )
+                                                else:
+                                                    print 'Delay Already Detected For %s' % friend.forename
+                                    print 'Delay Already Detected For %s' % user.forename
             if not already_claimed_today:
                 if not delay_found:
                     print 'No Cancelled Trains Found For %s' % user.forename
