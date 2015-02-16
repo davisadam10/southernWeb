@@ -201,3 +201,20 @@ def get_station_from_name(station_name):
         station = stations[0]
     return station
 
+
+def check_delay_already_found(user, delay_to_check):
+    """ Checks to see if the delay provided has already been detected for the given user
+
+    :param user: the user model we want to check
+    :type user: models.UserData
+    :param delay_to_check: the delay we are checking to see if the user has already found
+    :type delay_to_check: models.Delay
+    :return: whether or not the delay has been detected for that user
+    :rtype: bool
+    """
+    delays = models.Delay.objects.filter(delayRepayUser=user, date=delay_to_check.date)
+    print delays
+    for delay in delays:
+        if delay_to_check == delay:
+            return True
+    return False
