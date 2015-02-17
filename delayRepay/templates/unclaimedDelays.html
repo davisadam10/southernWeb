@@ -9,7 +9,7 @@
           {% csrf_token %}
           <div class="form-group">
             <h4>{{ delay.journey.journeyName }}</h4>
-              <p>At {{ delay.startTime|time:"H:i"}} On {{ delay.date|date:"d/m/Y"}}</p>
+              <p>From {{ delay.startTime|time:"H:i"}} To {{ delay.endTime|time:"H:i"}} On {{ delay.date|date:"d/m/Y"}}</p>
               <p>{{ delay.delay_reason}}</p>
               <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
           </div>
@@ -25,7 +25,7 @@
           {% csrf_token %}
           <div class="form-group">
             <h4>{{ delay.journey.journeyName }}</h4>
-              <p>At {{ delay.startTime|time:"H:i"}} On {{ delay.date|date:"d/m/Y"}}</p>
+              <p>From {{ delay.startTime|time:"H:i"}} To {{ delay.endTime|time:"H:i"}} On {{ delay.date|date:"d/m/Y"}}</p>
               <p>{{ delay.delay_reason}}</p>
               <input type='hidden' name="delay_Id" value="{{ delay.id}}" />
           </div>
