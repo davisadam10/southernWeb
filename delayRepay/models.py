@@ -51,6 +51,7 @@ class Delay(models.Model):
     delay_reason = models.CharField(max_length=200)
     delayRepayUser = models.ForeignKey(UserData)
     claimed = models.BooleanField(default=False)
+    expired = models.BooleanField(default=False)
     journey = models.ForeignKey(Journey)
 
     def __str__(self):
