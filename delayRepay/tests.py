@@ -8,6 +8,7 @@ import datetime
 
 
 chromedriver = "/usr/bin/chromedriver"
+print os.environ
 os.environ["webdriver.chrome.driver"] = chromedriver
 from selenium import webdriver
 from django.test import TestCase, LiveServerTestCase
