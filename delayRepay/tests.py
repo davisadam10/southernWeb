@@ -2,10 +2,14 @@
 coding=utf-8
 Unit tests and functional tests for delay repay
 """
+import os
 import time
 import datetime
-from selenium import webdriver
 
+
+chromedriver = "/usr/bin/chromedriver"
+os.environ["webdriver.chrome.driver"] = chromedriver
+from selenium import webdriver
 from django.test import TestCase, LiveServerTestCase
 from delayRepay.models import UserData, Station, Journey, Delay
 import delayRepay.utils as utils
