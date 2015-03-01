@@ -8,8 +8,6 @@ import datetime
 
 
 chromedriver = "/usr/bin/chromedriver"
-print os.environ
-os.environ["webdriver.chrome.driver"] = chromedriver
 from selenium import webdriver
 from django.test import TestCase, LiveServerTestCase
 from delayRepay.models import UserData, Station, Journey, Delay
@@ -140,7 +138,7 @@ class Test_Functional(LiveServerTestCase):
             station.save()
 
 
-        self.selenium = webdriver.Chrome()
+        self.selenium = webdriver.Firefox()
         self.selenium.maximize_window()
         super(Test_Functional, self).setUp()
 
