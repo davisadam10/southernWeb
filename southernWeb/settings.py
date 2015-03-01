@@ -37,10 +37,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_jenkins',
     'rest_framework',
     'delayRepay',
     'crispy_forms',
     'delayRepayRest',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,4 +110,9 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
+# Jenkins integration
+JENKINS_TASKS = (
+    'django_jenkins.tasks.with_coverage',
+    'django_jenkins.tasks.run_pylint',
+)
 
