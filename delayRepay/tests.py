@@ -138,7 +138,7 @@ class Test_Functional(LiveServerTestCase):
             station.save()
 
 
-        self.selenium = webdriver.Firefox()
+        self.selenium = webdriver.Chrome()
         self.selenium.maximize_window()
         super(Test_Functional, self).setUp()
 
