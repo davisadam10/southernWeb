@@ -19,7 +19,6 @@ mechanize==0.2.5
 suds==0.4
 python-postmark>=0.4.3
 pep8==1.6.2
-pylint==1.1.0
 pyflakes==0.8.1
 
 
