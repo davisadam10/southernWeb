@@ -283,7 +283,9 @@ def unclaimedDelays(request):
             new_delay.delete()
             return render_to_response('alreadyClaimed.html', {'redirect': '/unclaimedDelays'})
 
-        all_unclaimed = models.Delay.objects.filter(delayRepayUser=user_model, claimed=False)
+        all_unclaimed = models.Delay.objects.filter(
+            delayRepayUser=user_model, claimed=False, expired=False, claimable=True
+        )
         args['unclaimed_claimable'] = [
             delay for delay in all_unclaimed if
             utils.get_best_valid_ticket(user_model, delay.date)
