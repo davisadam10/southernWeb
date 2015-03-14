@@ -1,5 +1,5 @@
 selenium
-Django==1.7.5
+Django==1.7.6
 coverage==3.7.1
 dj-database-url==0.3.0
 django-crispy-forms==1.4.0
