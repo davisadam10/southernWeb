@@ -11,7 +11,7 @@ class Command(BaseCommand):
         for user in users:
             claimed_delays = models.Delay.objects.filter(claimed=True, delayRepayUser=user)
             claimed_dates = [delay.date for delay in claimed_delays]
-            unclaimed_delays = models.Delay.objects.filter(claimed=False, delayRepayUser=user)
+            unclaimed_delays = models.Delay.objects.filter(delayRepayUser=user)
             for delay in unclaimed_delays:
                 if delay.date in claimed_dates:
                     delay.claimable = False
