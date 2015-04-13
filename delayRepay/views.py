@@ -286,7 +286,8 @@ def unclaimedDelays(request):
 
         all_unclaimed = models.Delay.objects.filter(
             delayRepayUser=user_model, claimed=False, expired=False, claimable=True
-        )
+        ).order_by('-date')
+
         args['unclaimed_claimable'] = [
             delay for delay in all_unclaimed if
             utils.get_best_valid_ticket(user_model, delay.date)
