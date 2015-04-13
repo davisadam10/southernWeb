@@ -278,6 +278,7 @@ def unclaimedDelays(request):
                 if success:
                     new_delay.claimed = True
                     new_delay.save()
+                    utils.clear_unclaimable_delays(user_model)
                     return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
 
             new_delay.delete()

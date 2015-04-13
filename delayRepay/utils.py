@@ -218,3 +218,18 @@ def check_delay_already_found(user, delay_to_check):
         if delay_to_check == delay:
             return True
     return False
+
+def clear_unclaimable_delays(user):
+    """
+
+    :param user: the user model we want to check
+    :type user: models.UserData
+    """
+    claimed_delays = models.Delay.objects.filter(claimed=True, delayRepayUser=user)
+    claimed_dates = [delay.date for delay in claimed_delays]
+    unclaimed_delays = models.Delay.objects.filter(delayRepayUser=user)
+    for delay in unclaimed_delays:
+        if delay.date in claimed_dates:
+            delay.claimable = False
+            delay.save()
+

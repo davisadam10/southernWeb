@@ -3,16 +3,12 @@ __author__ = 'adam'
 
 from django.core.management.base import BaseCommand
 import delayRepay.models as models
+import delayRepay.utils as utils
 from datetime import datetime
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         users = models.UserData.objects.all()
         for user in users:
-            claimed_delays = models.Delay.objects.filter(claimed=True, delayRepayUser=user)
-            claimed_dates = [delay.date for delay in claimed_delays]
-            unclaimed_delays = models.Delay.objects.filter(delayRepayUser=user)
-            for delay in unclaimed_delays:
-                if delay.date in claimed_dates:
-                    delay.claimable = False
-                    delay.save()
+            utils.clear_unclaimable_delays(user)
+
