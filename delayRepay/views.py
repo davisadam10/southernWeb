@@ -284,6 +284,7 @@ def unclaimedDelays(request):
             new_delay.delete()
             return render_to_response('alreadyClaimed.html', {'redirect': '/unclaimedDelays'})
 
+        utils.clear_unclaimable_delays(user_model)
         all_unclaimed = models.Delay.objects.filter(
             delayRepayUser=user_model, claimed=False, expired=False, claimable=True
         ).order_by('-date')
