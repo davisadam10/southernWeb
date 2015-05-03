@@ -55,6 +55,12 @@ class Delay(models.Model):
     claimable = models.BooleanField(default=True)
     journey = models.ForeignKey(Journey)
 
+    _delayMap = {
+        '30-59 mins': 30,
+        '60-119 mins': 60,
+        '120+ mins': 120
+    }
+
     def __str__(self):
         output = "Date: %s\n" % str(self.date)
         output += "Start Time: %s\n" % str(self.startTime)
@@ -95,7 +101,10 @@ class Delay(models.Model):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-
+    def delay_totalizer_value(self):
+        """ Returns the value for the delay when calculating the maximum number of delays
+        """
+        return self._delayMap[self.delay]
 
 def get_image_path(instance, filename):
     return os.path.join(
