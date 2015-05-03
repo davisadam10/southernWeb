@@ -230,8 +230,9 @@ def clear_unclaimable_delays(user):
     unclaimed_delays = models.Delay.objects.filter(delayRepayUser=user)
     for delay in unclaimed_delays:
         if delay.date in claimed_dates:
-            delay.claimable = False
-            delay.save()
+            if already_claimed(user, delay.date):
+                delay.claimable = False
+                delay.save()
 
 
 def already_claimed(user_model, delay_date):
