@@ -233,3 +233,22 @@ def clear_unclaimable_delays(user):
             delay.claimable = False
             delay.save()
 
+
+def already_claimed(user_model, delay_date):
+    """ Check to see if we have passed the 120 minute maximum delay for the date given
+
+    :param user_model: the user model we want to check
+    :type user_model: models.UserData
+    :param delay_date: the date we are checking
+    :type delay_date: datetime.date
+    :return: whether we have already claimed over our limit or not
+    :rtype: bool
+    """
+    delays = [claimed_delay for claimed_delay in get_delays_for_date(user_model, delay_date) if claimed_delay.claimed]
+    total = 0
+    for delay in delays:
+        total += delay.delay_totalizer_value()
+
+    if total < 120:
+        return False
+    return True
