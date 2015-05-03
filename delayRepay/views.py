@@ -94,7 +94,7 @@ def index(request):
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
-                already_claimed = [claimed_delay for claimed_delay in utils.get_delays_for_date(user_model, delay.date) if claimed_delay.claimed]
+                already_claimed = utils.already_claimed(user_model, delay.date)
                 if already_claimed:
                     delay.delete()
                     return render_to_response('alreadyClaimed.html', {'redirect': '/'})
@@ -272,7 +272,7 @@ def unclaimedDelays(request):
 
             delay_id = request.POST.get('delay_Id')
             new_delay = models.Delay.objects.filter(id=delay_id)[0]
-            already_claimed = [delay for delay in utils.get_delays_for_date(user_model, new_delay.date) if delay.claimed]
+            already_claimed = utils.already_claimed(user_model, new_delay.date)
             if not already_claimed:
                 success = utils.submit_delay(request, new_delay, new_delay.journey)
                 if success:
