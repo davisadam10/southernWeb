@@ -90,7 +90,9 @@ def index(request):
         args['journey_names'] = ', '.join(journey_names)
 
         if request.method == 'POST':
-            journey = [journey for journey in args['journeys'] if journey.id == int(request.POST['journey_name'])]
+            journey = None
+            if request.POST['journey_name'] != "":
+                journey = [journey for journey in args['journeys'] if journey.id == int(request.POST['journey_name'])]
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
