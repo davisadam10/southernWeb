@@ -13,6 +13,9 @@ from django.test import TestCase, LiveServerTestCase
 from delayRepay.models import UserData, Station, Journey, Delay
 import delayRepay.utils as utils
 
+# Turn The debugging on so that we don't submit any delays during unit testing
+utils.DEBUG = True
+
 TEARDOWN_TIME = 0
 
 
@@ -268,6 +271,12 @@ class Test_Functional(LiveServerTestCase):
         self.selenium.find_element_by_id('id_no_ticket_2').click()
         delays = Delay.objects.filter(id=delay_id)
         self.assertEquals([], list(delays))
+
+    def test_submit_noJourneySelect(self):
+        self.login()
+        self.selenium.find_element_by_id('submit-id-submit-delay').click()
+        expected_url = self.index + "/"
+        self.assertEquals(expected_url, self.selenium.current_url)
 
 
 
