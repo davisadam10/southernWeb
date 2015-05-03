@@ -22,7 +22,7 @@ class Command(BaseCommand):
         users = models.UserData.objects.all()
         for user in users:
             delay_found = False
-            already_claimed_today = [delay for delay in utils.get_delays_for_today(user) if delay.claimed]
+            already_claimed_today = utils.already_claimed(user, datetime.now().date())
             journeys = utils.get_user_journeys(user)
             if already_claimed_today:
                 print "%s Has Already Made A Claim Today" % user.forename
