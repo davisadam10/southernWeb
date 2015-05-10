@@ -96,7 +96,7 @@ def index(request):
             form = delayRepayForms.DelayForm(request.POST)
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
-                already_claimed = utils.already_claimed(user_model, delay.date)
+                already_claimed = utils.already_claimed(user_model, delay.date, doMaxCheck=True)
                 if already_claimed:
                     delay.delete()
                     return render_to_response('alreadyClaimed.html', {'redirect': '/'})
