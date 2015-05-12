@@ -313,8 +313,11 @@ class TicketForm(forms.ModelForm):
             self.fields['ticket_expiry_date'].input_formats = ['%d/%m/%Y']
 
     valid_ticket_types = (
+        ("weekly", 'weekly'),
         ("monthly", 'monthly'),
         ("yearly", 'yearly'),
+
+
     )
 
     ticket_type = forms.ChoiceField(choices=valid_ticket_types)
