@@ -71,7 +71,9 @@ DATABASES = {
 
 DATABASES['default'] =  dj_database_url.config()
 DATABASES['default']['ENGINE'] = 'django_postgrespool'
-#DATABASES['default']['NAME'] = 'southernweb'
+if 'DEV' in os.environ:
+    if os.environ['DEV'] == 1:
+        DATABASES['default']['NAME'] = 'southernweb'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
