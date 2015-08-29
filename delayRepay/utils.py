@@ -146,14 +146,15 @@ def submit_delay(request, delay, journey):
     main_form['delayReason_1'] = [delay.delay_reason, ]
     main_form['delay_1'] = [delay.delay, ]
 
+    main_form['photocard_id_1'] = user.photocard_id
+
     control = main_form.find_control("uploadedfile_1")
     image_field = ticket.ticket_photo
     image_field.open()
     control.add_file(image_field, 'text/plain', ticket.ticket_photo.name)
 
-    compensation = "National Rail Vouchers"
-    main_form['compensation'] = [compensation, ]
-    main_form['photocard_id_1'] = user.photocard_id
+    main_form['confirmation'] = ['true']
+
 
     if not DEBUG:
         br.submit()  # returns a response
