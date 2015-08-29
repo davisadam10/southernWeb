@@ -6,7 +6,8 @@ __author__ = 'adam'
 from datetime import datetime
 import mechanize
 import delayRepay.models as models
-import uuid
+from bs4 import BeautifulSoup
+import base64
 
 DEBUG = False
 
@@ -86,27 +87,52 @@ def get_best_valid_ticket(user, date):
 
     return valid_ticket
 
+def get_browser_and_captcha():
+    """ Get the mechanize browser and captcha image
 
-def submit_delay(request, delay, journey):
+    :return: a tuple of two items, the first is the mechanize browser and the second is the base64 representation of the capture image
+    """
+    br = mechanize.Browser()
+    url = 'http://www.southernrailway.com/your-journey/customer-services/delay-repay/delay-repay-form'
+    response = br.open(url)
+
+    soup = BeautifulSoup(response.get_data(),  "html.parser")
+    imgs = soup.find_all('img')
+    img = None
+    for imgage in imgs:
+        if 'CAP' in str(imgage):
+            img = imgage
+
+    image_response = br.open_novisit(img['src'])
+    image_data = base64.urlsafe_b64encode(image_response.read())
+    response_data = base64.urlsafe_b64encode(response.read())
+    return response_data, image_data
+
+
+def submit_delay(username, delay, journey, encoded_response):
     """
 
-    :param request: the http request passed in
-    :type request: django.http.HttpRequest
+    :param username: the username
+    :type username: string
     :param delay: the delay model we are claiming for
     :type delay: models.Delay
     :param journey:
     :type journey: models.Journey
+    :param encoded_response: the response which matches the captcha
+    :type encoded_response: base64
     :return: if the delay has been successfully submitted
     :rtype: bool
     """
-    user = models.UserData.objects.filter(username=request.user)[0]
+    user = models.UserData.objects.filter(username=username)[0]
     ticket = get_best_valid_ticket(user, delay.date)
     if not ticket:
         return False
 
     br = mechanize.Browser()
-    url = 'http://www.southernrailway.com/your-journey/customer-services/delay-repay/delay-repay-form'
-    br.open(url)
+    response_string = base64.urlsafe_b64decode(encoded_response)
+    response = mechanize._response.test_html_response(response_string)
+
+    br.set_response(response)
 
     forms = []
 
@@ -154,7 +180,6 @@ def submit_delay(request, delay, journey):
     control.add_file(image_field, 'text/plain', ticket.ticket_photo.name)
 
     main_form['confirmation'] = ['true']
-
 
     if not DEBUG:
         br.submit()  # returns a response
@@ -253,6 +278,7 @@ def already_claimed(user_model, delay_date, doMaxCheck=False):
     delays = [claimed_delay for claimed_delay in get_delays_for_date(user_model, delay_date) if claimed_delay.claimed]
     if doMaxCheck:
         total = 0
+
         for delay in delays:
             total += delay.delay_totalizer_value()
 

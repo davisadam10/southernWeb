@@ -1,5 +1,5 @@
 selenium
-Django==1.8.1
+Django==1.8.4
 coverage==3.7.1
 dj-database-url==0.3.0
 django-crispy-forms-ng==2.0.0
@@ -20,5 +20,8 @@ suds==0.4
 python-postmark>=0.4.3
 pep8==1.6.2
 pyflakes==0.8.1
+beautifulsoup4==4.4.0
+
+
 
 

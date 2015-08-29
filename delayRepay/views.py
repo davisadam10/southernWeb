@@ -94,13 +94,15 @@ def index(request):
             if request.POST['journey_name'] != "":
                 journey = [journey for journey in args['journeys'] if journey.id == int(request.POST['journey_name'])]
             form = delayRepayForms.DelayForm(request.POST)
+
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
                 already_claimed = utils.already_claimed(user_model, delay.date, doMaxCheck=True)
                 if already_claimed:
                     delay.delete()
                     return render_to_response('alreadyClaimed.html', {'redirect': '/'})
-                success = utils.submit_delay(request, delay, journey[0])
+                encodedResponse, encodedImage = utils.get_browser_and_captcha()
+                success = utils.submit_delay(user_model.username, delay, journey[0], encodedResponse)
                 if not success:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
@@ -276,7 +278,8 @@ def unclaimedDelays(request):
             new_delay = models.Delay.objects.filter(id=delay_id)[0]
             already_claimed = utils.already_claimed(user_model, new_delay.date)
             if not already_claimed:
-                success = utils.submit_delay(request, new_delay, new_delay.journey)
+                encodedresponse, encodedimage = utils.get_browser_and_captcha()
+                success = utils.submit_delay(user_model.username, new_delay, new_delay.journey, encodedresponse)
                 if success:
                     new_delay.claimed = True
                     new_delay.save()
