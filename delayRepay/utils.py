@@ -6,6 +6,7 @@ __author__ = 'adam'
 from datetime import datetime
 import mechanize
 import delayRepay.models as models
+import uuid
 
 DEBUG = False
 
@@ -63,7 +64,8 @@ def get_user_model_from_request(request):
 
 def get_best_valid_ticket(user, date):
     """ From all the users tickets, find a valid ticket for the journey date supplied.
-        If there are multiple tickets, find the one which cost the most, as to claim the maximum back.
+        If there are multiple tickets, find the one which cost the most, as to claim
+        the maximum back.
 
     :param user: the user model for current user
     :type user: models.UserData

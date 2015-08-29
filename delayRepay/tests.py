@@ -18,6 +18,8 @@ utils.DEBUG = True
 
 TEARDOWN_TIME = 0
 
+def wait():
+    time.sleep(0.0)
 
 class BaseDelayRepayTesting(TestCase):
     testUsers = ['Adam', 'Holly', 'Kelly', 'Ben']
@@ -141,7 +143,7 @@ class Test_Functional(LiveServerTestCase):
             station.save()
 
 
-        self.selenium = webdriver.Chrome()
+        self.selenium = webdriver.PhantomJS()
         self.selenium.maximize_window()
         super(Test_Functional, self).setUp()
 
@@ -154,14 +156,19 @@ class Test_Functional(LiveServerTestCase):
 
     def login(self):
         self.selenium.get(self.index)
+        wait()
         self.selenium.find_element_by_id('id_username').send_keys('User_Adam')
+        wait()
         self.selenium.find_element_by_id('id_password').send_keys('testing')
+        wait()
         self.selenium.find_element_by_id('submit-id-login').click()
+        wait()
 
     def test_invalid_login(self):
         self.selenium.get(self.index)
+        wait()
         self.selenium.find_element_by_id('submit-id-login').click()
-
+        wait()
         expected_error = "Sorry, that's not a valid username or password"
         errors = self.selenium.find_elements_by_class_name("error")
         self.assertEquals(expected_error, errors[0].text)
@@ -178,6 +185,7 @@ class Test_Functional(LiveServerTestCase):
         self.login()
         self.selenium.get(self.index + '/addJourney')
         expected_title = "Add A Journey"
+        wait()
         self.assertEquals(
             expected_title,
             self.selenium.find_element_by_id("page_title").text
@@ -195,11 +203,15 @@ class Test_Functional(LiveServerTestCase):
 
     def add_friend(self, expected_email):
         expected_url = self.index + '/addFriend/'
+        wait()
         self.selenium.find_element_by_id('id_addFriend').click()
+        wait()
         self.assertEquals(expected_url, self.selenium.current_url)
 
         self.selenium.find_element_by_id('id_friend_email').send_keys(expected_email)
+        wait()
         self.selenium.find_element_by_id('submit-id-add-friend').click()
+        wait()
 
     def test_add_friend_valid(self):
         self.login()
@@ -257,20 +269,10 @@ class Test_Functional(LiveServerTestCase):
     def test_unclaimed_delays(self):
         self.login()
         expected_url = self.index + '/unclaimedDelays/'
+        wait()
         self.selenium.find_element_by_id('id_unclaimedDelays').click()
+        wait()
         self.assertEquals(expected_url, self.selenium.current_url)
-
-    def test_unclaimed_delays_no_ticket(self):
-        self.login()
-        expected_url = self.index + '/unclaimedDelays/'
-        delay_id = 2
-
-        self.selenium.find_element_by_id('id_unclaimedDelays').click()
-        self.assertEquals(expected_url, self.selenium.current_url)
-
-        self.selenium.find_element_by_id('id_no_ticket_2').click()
-        delays = Delay.objects.filter(id=delay_id)
-        self.assertEquals([], list(delays))
 
     def test_submit_noJourneySelect(self):
         self.login()
