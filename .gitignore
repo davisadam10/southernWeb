@@ -3,5 +3,7 @@ db.sqlite3
 *.idea
 */*.xml
 *.pyc
+*.log
+*.jpg
 *.dump
 southernWebEnv/*
