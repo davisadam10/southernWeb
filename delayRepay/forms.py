@@ -111,6 +111,30 @@ class LoginForm(forms.Form):
         FormActions(Submit('register', value="register", css_class="btn-danger")),
     )
 
+class AnswerCaptchaForm(forms.Form):
+    imageUrl = forms.CharField(label='imageUrl')
+    encoded_response = forms.CharField(label='encoded_response')
+    answer = forms.CharField(label='answer')
+    username = forms.CharField(label='username')
+    delayId = forms.CharField(label='delayId')
+    journeyId = forms.CharField(label='journeyId')
+
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.form_action = '/answerCaptcha/'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-sm-4'
+    helper.field_class = 'col-sm-4'
+    helper.layout = Layout(
+        Field('imageUrl', css_class='input-sm', type="hidden"),
+        Field('encoded_response', css_class='input-sm', type="hidden"),
+        Field('answer', css_class='input-sm'),
+        Field('username', css_class='input-sm', type="hidden"),
+        Field('delayId', css_class='input-sm', type="hidden"),
+        Field('journeyId', css_class='input-sm', type="hidden"),
+        FormActions(Submit('submit',  value="submit", css_class="btn-primary")),
+    )
+
 
 class DelayForm(forms.ModelForm):
     delays = [
