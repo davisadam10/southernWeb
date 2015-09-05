@@ -8,6 +8,8 @@ import mechanize
 import delayRepay.models as models
 from bs4 import BeautifulSoup
 import base64
+from django.core.files.storage import default_storage as storage
+from PIL import Image
 
 DEBUG = False
 
@@ -104,12 +106,15 @@ def get_browser_and_captcha():
             img = imgage
 
     image_response = br.open_novisit(img['src'])
-    image_data = base64.urlsafe_b64encode(image_response.read())
+    im = Image.open(image_response)
+    fh = storage.open('captcha.png', "w")
+    im.save(fh, 'png')
+    fh.close()
     response_data = base64.urlsafe_b64encode(response.read())
-    return response_data, image_data
+    return response_data, storage.url('captcha.png')
 
 
-def submit_delay(username, delay, journey, encoded_response):
+def submit_delay(username, delay, journey, encoded_response, answer):
     """
 
     :param username: the username
@@ -129,7 +134,7 @@ def submit_delay(username, delay, journey, encoded_response):
         return False
 
     br = mechanize.Browser()
-    response_string = base64.urlsafe_b64decode(encoded_response)
+    response_string = base64.urlsafe_b64decode(str(encoded_response))
     response = mechanize._response.test_html_response(response_string)
 
     br.set_response(response)
@@ -171,6 +176,8 @@ def submit_delay(username, delay, journey, encoded_response):
     main_form['arriving_station_1'] = journey.arrivingStation
     main_form['delayReason_1'] = [delay.delay_reason, ]
     main_form['delay_1'] = [delay.delay, ]
+
+    main_form['user_captcha'] = str(answer)
 
     main_form['photocard_id_1'] = user.photocard_id
 
