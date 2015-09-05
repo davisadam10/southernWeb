@@ -29,6 +29,7 @@ urlpatterns = patterns(
     url(r'^addFriend/$', 'delayRepay.views.addFriend', name='addFriend'),
     url(r'^unclaimedDelays/$', 'delayRepay.views.unclaimedDelays', name='unclaimedDelays'),
     url(r'^noTicket/$', 'delayRepay.views.noTicket', name='noTicket'),
+    url(r'^answerCaptcha/$', 'delayRepay.views.answerCaptcha', name='answerCaptcha'),
     url(r'^register/$', 'delayRepay.views.register_user', name='invalid_login'),
     url(r'^register_success/$', 'delayRepay.views.register_success', name='invalid_login'),
     url(r'^', include(router.urls)),
