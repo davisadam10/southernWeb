@@ -4,11 +4,13 @@ Views for the delay repay app
 """
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.contrib import auth
 from django.core.context_processors import csrf
 import forms as delayRepayForms
 import delayRepay.models as models
 import delayRepay.utils as utils
+import base64
 
 
 def register_success(request):
@@ -101,23 +103,25 @@ def index(request):
                 if already_claimed:
                     delay.delete()
                     return render_to_response('alreadyClaimed.html', {'redirect': '/'})
-                encodedResponse, encodedImage = utils.get_browser_and_captcha()
-                success = utils.submit_delay(user_model.username, delay, journey[0], encodedResponse)
-                if not success:
+
+                encodedResponse, imageUrl = utils.get_browser_and_captcha()
+                ticket = utils.get_best_valid_ticket(user_model, delay.date)
+                if not ticket:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
 
-                delay.claimed = True
                 delay.save()
-                friends = user_model.friends.all()
-                for friend in friends:
-                    delay.claimed = False
-                    delay.pk = None
-                    delay.delayRepayUser = friend
-                    if not utils.check_delay_already_found(friend, delay):
-                        delay.save()
 
-                return render_to_response('delaySuccess.html', {'redirect': '/'})
+                delayArgs = {}
+                delayArgs['encoded_response'] = encodedResponse
+                delayArgs['imageUrl'] = imageUrl
+                delayArgs['username'] = user_model.username
+                delayArgs['delayId'] = delay.id
+                delayArgs['journeyId'] = journey[0].id
+
+                request.session['delayData'] = delayArgs
+                return HttpResponseRedirect('/answerCaptcha')
+
             else:
                 args['form'] = form
                 return render_to_response('index.html', args)
@@ -126,6 +130,53 @@ def index(request):
             return render_to_response('index.html', args)
     else:
         return HttpResponseRedirect('/login')
+
+def answerCaptcha(request):
+    """
+
+    :param request:
+    :return: :rtype:
+    """
+    args = {}
+    args.update(csrf(request))
+    if request.user.is_authenticated() and request.user.is_active:
+        if request.method == 'POST':
+            form = delayRepayForms.AnswerCaptchaForm(request.POST)
+            if form.is_valid():
+                user = utils.get_user_model_from_request(request)
+                delay = models.Delay.objects.filter(id=form.cleaned_data['delayId'])[0]
+                journey = models.Journey.objects.filter(id=form.cleaned_data['journeyId'])[0]
+                encodedResponse = form.cleaned_data['encoded_response']
+                answer = form.cleaned_data['answer']
+                success = utils.submit_delay(user.username, delay, journey, encodedResponse, answer)
+                if success:
+                    delay.claimed = True
+                    delay.save()
+                    friends = user.friends.all()
+                    for friend in friends:
+                        delay.claimed = False
+                        delay.pk = None
+                        delay.delayRepayUser = friend
+                        if not utils.check_delay_already_found(friend, delay):
+                            delay.save()
+                    return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
+                else:
+                    return HttpResponseRedirect('/noTicket')
+            else:
+                args['form'] = form
+                args['imageUrl'] = form.cleaned_data['imageUrl']
+                return render_to_response('answerCaptcha.html', args)
+
+        else:
+            delayData = request.session['delayData']
+            args['form'] = delayRepayForms.AnswerCaptchaForm(delayData)
+            args['imageUrl'] = delayData['imageUrl']
+            return render_to_response('answerCaptcha.html', args)
+
+
+    else:
+        return HttpResponseRedirect('/login')
+
 
 
 def addJourney(request):
@@ -275,18 +326,28 @@ def unclaimedDelays(request):
                 return HttpResponseRedirect('/unclaimedDelays')
 
             delay_id = request.POST.get('delay_Id')
-            new_delay = models.Delay.objects.filter(id=delay_id)[0]
-            already_claimed = utils.already_claimed(user_model, new_delay.date)
+            delay = models.Delay.objects.filter(id=delay_id)[0]
+            already_claimed = utils.already_claimed(user_model, delay.date)
             if not already_claimed:
-                encodedresponse, encodedimage = utils.get_browser_and_captcha()
-                success = utils.submit_delay(user_model.username, new_delay, new_delay.journey, encodedresponse)
-                if success:
-                    new_delay.claimed = True
-                    new_delay.save()
-                    utils.clear_unclaimable_delays(user_model)
-                    return render_to_response('delaySuccess.html', {'redirect': '/unclaimedDelays'})
+                encodedResponse, imageUrl = utils.get_browser_and_captcha()
+                ticket = utils.get_best_valid_ticket(user_model, delay.date)
+                if not ticket:
+                    delay.delete()
+                    return HttpResponseRedirect('/noTicket')
 
-            new_delay.delete()
+                delay.save()
+
+                delayArgs = {}
+                delayArgs['encoded_response'] = encodedResponse
+                delayArgs['imageUrl'] = imageUrl
+                delayArgs['username'] = user_model.username
+                delayArgs['delayId'] = delay.id
+                delayArgs['journeyId'] = delay.journey.id
+
+                request.session['delayData'] = delayArgs
+                return HttpResponseRedirect('/answerCaptcha')
+
+            delay.delete()
             return render_to_response('alreadyClaimed.html', {'redirect': '/unclaimedDelays'})
 
         utils.clear_unclaimable_delays(user_model)
