@@ -196,6 +196,7 @@ def submit_delay(username, delay, journey, encoded_response, answer):
         #temp_file.write(text)
         #temp_file.close()
 
+    GLOBAL_BROWSER[username] = None
     return True
 
 
