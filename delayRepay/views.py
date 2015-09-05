@@ -104,7 +104,7 @@ def index(request):
                     delay.delete()
                     return render_to_response('alreadyClaimed.html', {'redirect': '/'})
 
-                encodedResponse, imageUrl = utils.get_browser_and_captcha()
+                encodedResponse, imageUrl = utils.get_browser_and_captcha(user_model.username)
                 ticket = utils.get_best_valid_ticket(user_model, delay.date)
                 if not ticket:
                     delay.delete()
@@ -329,7 +329,7 @@ def unclaimedDelays(request):
             delay = models.Delay.objects.filter(id=delay_id)[0]
             already_claimed = utils.already_claimed(user_model, delay.date)
             if not already_claimed:
-                encodedResponse, imageUrl = utils.get_browser_and_captcha()
+                encodedResponse, imageUrl = utils.get_browser_and_captcha(user_model.username)
                 ticket = utils.get_best_valid_ticket(user_model, delay.date)
                 if not ticket:
                     delay.delete()

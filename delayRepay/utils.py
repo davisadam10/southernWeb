@@ -5,13 +5,14 @@ Utils for delay repay
 __author__ = 'adam'
 from datetime import datetime
 import mechanize
+import base64
 import delayRepay.models as models
 from bs4 import BeautifulSoup
-import base64
 from django.core.files.storage import default_storage as storage
 from PIL import Image
 
 DEBUG = False
+GLOBAL_BROWSER = {}
 
 def cleanName(name):
     """
@@ -89,8 +90,9 @@ def get_best_valid_ticket(user, date):
 
     return valid_ticket
 
-def get_browser_and_captcha():
-    """ Get the mechanize browser and captcha image
+def get_browser_and_captcha(username):
+    """ Get the mechanize browser and captcha image: Note we have to store this in a global variable otherwise
+    the captcha does not match
 
     :return: a tuple of two items, the first is the mechanize browser and the second is the base64 representation of the capture image
     """
@@ -98,6 +100,8 @@ def get_browser_and_captcha():
     url = 'http://www.southernrailway.com/your-journey/customer-services/delay-repay/delay-repay-form'
     response = br.open(url)
 
+    global GLOBAL_BROWSER
+    GLOBAL_BROWSER[username] = br
     soup = BeautifulSoup(response.get_data(),  "html.parser")
     imgs = soup.find_all('img')
     img = None
@@ -133,11 +137,8 @@ def submit_delay(username, delay, journey, encoded_response, answer):
     if not ticket:
         return False
 
-    br = mechanize.Browser()
-    response_string = base64.urlsafe_b64decode(str(encoded_response))
-    response = mechanize._response.test_html_response(response_string)
-
-    br.set_response(response)
+    global GLOBAL_BROWSER
+    br = GLOBAL_BROWSER[username]
 
     forms = []
 
@@ -190,10 +191,10 @@ def submit_delay(username, delay, journey, encoded_response, answer):
 
     if not DEBUG:
         br.submit()  # returns a response
-        # text = response.read()
-        # temp_file = open("/home/adam/temp.html", "w")
-        # temp_file.write(text)
-        # temp_file.close()
+        #text = response.read()
+        #temp_file = open("/Users/adam/temp.html", "w")
+        #temp_file.write(text)
+        #temp_file.close()
 
     return True
 

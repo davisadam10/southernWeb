@@ -49,8 +49,8 @@ class BaseDelayRepayTesting(TestCase):
             today = datetime.datetime.now().date()
             ticket = Ticket()
             ticket.cost = 330.00
-            ticket.ticket_start_date = datetime.datetime(today.year, today.month -1, today.day)
-            ticket.ticket_expiry_date = datetime.datetime(today.year, today.month + 1, today.day)
+            ticket.ticket_start_date = datetime.datetime(today.year, today.month -1, 1)
+            ticket.ticket_expiry_date = datetime.datetime(today.year, today.month + 2, 1)
             ticket.delayRepayUser = user
             ticket.ticket_photo = SimpleUploadedFile('best_file_eva.txt', 'these are the file contents!')
             ticket.save()
@@ -61,7 +61,7 @@ class BaseDelayRepayTesting(TestCase):
                 if count % 2 == 0:
                     delay.date = date
                 else:
-                    delay.date = datetime.datetime(date.year+1, date.month+1, date.day+1).date()
+                    delay.date = datetime.datetime(date.year+1, date.month+1, 2).date()
                 delay.startTime = datetime.datetime.now().time()
                 delay.endTime = datetime.datetime.now().time()
                 delay.delay = '30-59 mins'
@@ -141,8 +141,8 @@ class Test_Functional(LiveServerTestCase):
             today = datetime.datetime.now().date()
             ticket = Ticket()
             ticket.cost = 330.00
-            ticket.ticket_start_date = datetime.datetime(today.year, today.month -1, today.day)
-            ticket.ticket_expiry_date = datetime.datetime(today.year, today.month + 1, today.day)
+            ticket.ticket_start_date = datetime.datetime(today.year, today.month -1, 1)
+            ticket.ticket_expiry_date = datetime.datetime(today.year, today.month + 2, 1)
             ticket.delayRepayUser = user
             ticket.ticket_photo = SimpleUploadedFile('best_file_eva.txt', 'these are the file contents!')
             ticket.save()
@@ -153,7 +153,7 @@ class Test_Functional(LiveServerTestCase):
                 if count % 2 == 0:
                     delay.date = date
                 else:
-                    delay.date = datetime.datetime(date.year+1, date.month+1, date.day+1).date()
+                    delay.date = datetime.datetime(date.year+1, date.month+1, 2).date()
                 delay.startTime = datetime.datetime.now().time()
                 delay.endTime = datetime.datetime.now().time()
                 delay.delay = '30-59 mins'
@@ -349,6 +349,11 @@ class TestUtils(BaseDelayRepayTesting):
 
     def get_browser_and_captcha(self):
         responseString, imagestring = utils.get_browser_and_captcha()
+        import base64
+        data = base64.urlsafe_b64decode(imagestring)
+        myfile = open('/Users/adam/test.jpg', 'w')
+        myfile.write(data)
+        myfile.close()
 
     def test_submit_delay(self):
         adam = UserData.objects.filter(first_name='Adam')[0]
