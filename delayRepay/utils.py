@@ -101,7 +101,10 @@ def get_browser_and_captcha(username):
     response = br.open(url)
 
     global GLOBAL_BROWSER
+    print "\n\nSETTING GLOBAL BROWSER"
     GLOBAL_BROWSER[username] = br
+    print GLOBAL_BROWSER[username]
+    print
     soup = BeautifulSoup(response.get_data(),  "html.parser")
     imgs = soup.find_all('img')
     img = None
@@ -138,6 +141,9 @@ def submit_delay(username, delay, journey, encoded_response, answer):
         return False
 
     global GLOBAL_BROWSER
+    print "\n\nGETTING GLOBAL BROWSER"
+    print GLOBAL_BROWSER[username]
+    print
     br = GLOBAL_BROWSER[username]
 
     forms = []
@@ -145,8 +151,10 @@ def submit_delay(username, delay, journey, encoded_response, answer):
     for form in br.forms():
         forms.append(form)
 
-    main_form = forms[4]
-    br.form = list(br.forms())[4]
+
+    formIdx = 5
+    main_form = forms[formIdx]
+    br.form = list(br.forms())[formIdx]
 
     main_form['title'] = [user.title, ]
     main_form['forename'] = user.forename
@@ -196,7 +204,10 @@ def submit_delay(username, delay, journey, encoded_response, answer):
         #temp_file.write(text)
         #temp_file.close()
 
+    print '\n\nCLEARING GLOBAL BROWSER'
     GLOBAL_BROWSER[username] = None
+    print GLOBAL_BROWSER[username]
+    print
     return True
 
 
