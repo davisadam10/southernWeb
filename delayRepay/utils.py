@@ -152,7 +152,7 @@ def submit_delay(username, delay, journey, encoded_response, answer):
         forms.append(form)
 
 
-    formIdx = 5
+    formIdx = 4
     main_form = forms[formIdx]
     br.form = list(br.forms())[formIdx]
 
@@ -195,7 +195,7 @@ def submit_delay(username, delay, journey, encoded_response, answer):
     image_field.open()
     control.add_file(image_field, 'text/plain', ticket.ticket_photo.name)
 
-    main_form['confirmation'] = ['true']
+    main_form['confirmation'] = ['Yes']
 
     if not DEBUG:
         br.submit()  # returns a response
