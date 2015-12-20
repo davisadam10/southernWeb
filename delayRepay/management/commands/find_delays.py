@@ -69,7 +69,7 @@ class Command(BaseCommand):
                                 )
 
                                 station = models.Station.objects.filter(name=journey.arrivingStation)[0]
-                                serviceArrival = nationalRailUtils.findServiceArrivalTime(service_origin, "%s:%s" % (hour, minute), station.short_name, service.serviceID, journey.departingStation)
+                                serviceArrival = nationalRailUtils.findServiceArrivalTime(station.name, service.serviceID)
                                 if serviceArrival:
                                     arrivalHour, arrivalMinute = serviceArrival.split(':')
 
@@ -81,7 +81,6 @@ class Command(BaseCommand):
                                     newDelay.delayRepayUser = user
                                     newDelay.journey = journey
                                     newDelay.date = datetime.now().date()
-
                                     if not utils.check_delay_already_found(user, newDelay):
                                         newDelay.save()
                                         delay_found_arrive = True

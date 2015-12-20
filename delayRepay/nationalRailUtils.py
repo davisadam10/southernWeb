@@ -147,17 +147,22 @@ for service in services:
 #for services
 
 
-def findServiceArrivalTime(start_station, start_time, station_short, serviceID, stationOnRoute):
-    services = get_arrival_services(station_short)
-    for service in services.trainServices.service:
-        if start_station == service.origin.location[0].locationName:
-            details = LDB.service.GetServiceDetails(service.serviceID)
-            for calling_point in details.previousCallingPoints.callingPointList[0].callingPoint:
-                if calling_point.locationName == start_station:
-                    for calling_point2 in details.previousCallingPoints.callingPointList[0].callingPoint:
-                        if calling_point2.locationName == stationOnRoute:
-                            if calling_point2.st == start_time:
-                                return service.sta
+def findServiceArrivalTime(station_name, serviceID):
+    details = LDB.service.GetServiceDetails(serviceID)
+    callingPoint = None
+    for calling_point in details.previousCallingPoints.callingPointList[0].callingPoint:
+        if calling_point.locationName == station_name:
+            callingPoint = calling_point
+
+    if not callingPoint:
+        for calling_point in details.subsequentCallingPoints.callingPointList[0].callingPoint:
+            if calling_point.locationName == station_name:
+                callingPoint = calling_point
+
+    if callingPoint:
+        return callingPoint.st
+
+
 
 '''
 services = get_services_arriving_from(
