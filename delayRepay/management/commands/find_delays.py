@@ -21,7 +21,10 @@ class Command(BaseCommand):
             print 'Trains are running checking for delays'
         users = models.UserData.objects.all()
         for user in users:
-            delay_found = False
+            delay_found_depart = False
+            delay_found_arrive = False
+            delay_found = delay_found_depart and delay_found_arrive
+
             already_claimed_today = utils.already_claimed(user, datetime.now().date())
             journeys = utils.get_user_journeys(user)
             if already_claimed_today:
@@ -55,6 +58,7 @@ class Command(BaseCommand):
 
                             service_origin = service.origin.location[0].locationName
                             if journey.departingStation != service_origin:
+                                print "Harder as start station is not the beginning of the line"
                                 print "%s Found A Cancelled Train To %s calling at %s starting from %s @ %s:%s" % (
                                     user.forename,
                                     journey.arrivingStation,
@@ -63,8 +67,55 @@ class Command(BaseCommand):
                                     hour,
                                     minute
                                 )
+
+                                station = models.Station.objects.filter(name=journey.arrivingStation)[0]
+                                serviceArrival = nationalRailUtils.findServiceArrivalTime(service_origin, "%s:%s" % (hour, minute), station.short_name, service.serviceID, journey.departingStation)
+                                if serviceArrival:
+                                    arrivalHour, arrivalMinute = serviceArrival.split(':')
+
+                                    newDelay = models.Delay()
+                                    newDelay.startTime = time(int(hour), int(minute))
+                                    newDelay.endTime = time(int(arrivalHour), int(arrivalMinute))
+                                    newDelay.delay = '30-59 mins'
+                                    newDelay.delay_reason = 'Train cancelled'
+                                    newDelay.delayRepayUser = user
+                                    newDelay.journey = journey
+                                    newDelay.date = datetime.now().date()
+
+                                    if not utils.check_delay_already_found(user, newDelay):
+                                        newDelay.save()
+                                        delay_found_arrive = True
+                                        send_mail(
+                                                'New Delay',
+                                                'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (
+                                                user.forename, newDelay),
+                                                'admin@southern-fail.co.uk',
+                                                [str(user.email)]
+                                        )
+
+                                        friends = user.friends.all()
+                                        for friend in friends:
+                                            delays_on_date = utils.get_delays_for_date(friend, newDelay.date)
+                                            if not delays_on_date:
+                                                newDelay.claimed = False
+                                                newDelay.pk = None
+                                                newDelay.delayRepayUser = friend
+                                                if not utils.check_delay_already_found(friend, newDelay):
+                                                    newDelay.save()
+                                                    send_mail(
+                                                            'New Delay',
+                                                            'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (
+                                                            user.forename, newDelay),
+                                                            'admin@southern-fail.co.uk',
+                                                            [str(friend.email)]
+                                                    )
+                                                else:
+                                                    print 'Delay Already Detected For %s' % friend.forename
+                                    print 'Delay Already Detected For %s' % user.forename
+
+
                             else:
-                                # Easy As departing station is end of the line so no problems
+                                print "Easy As departing station is end of the line so no problems"
                                 extra = ''
                                 if arrival:
                                     extra = ' Arriving '
@@ -90,7 +141,7 @@ class Command(BaseCommand):
                                     newDelay.date = datetime.now().date()
                                     if not utils.check_delay_already_found(user, newDelay):
                                         newDelay.save()
-                                        delay_found = True
+                                        delay_found_depart = True
                                         send_mail(
                                             'New Delay', 'Hi %s,\n\nA delay has been detected and added to your account\n\nClaim at www.southern-fail.co.uk\n\n%s' % (user.forename, newDelay),
                                             'admin@southern-fail.co.uk',
@@ -114,6 +165,8 @@ class Command(BaseCommand):
                                                 else:
                                                     print 'Delay Already Detected For %s' % friend.forename
                                     print 'Delay Already Detected For %s' % user.forename
+
+                delay_found = delay_found_arrive and delay_found_depart
             if not already_claimed_today:
                 if not delay_found:
                     print 'No Cancelled Trains Found For %s' % user.forename
