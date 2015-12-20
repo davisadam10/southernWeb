@@ -261,7 +261,6 @@ def check_delay_already_found(user, delay_to_check):
     :rtype: bool
     """
     delays = models.Delay.objects.filter(delayRepayUser=user, date=delay_to_check.date)
-    print delays
     for delay in delays:
         if delay_to_check == delay:
             return True
