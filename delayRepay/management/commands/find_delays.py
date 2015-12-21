@@ -110,7 +110,8 @@ class Command(BaseCommand):
                                                     )
                                                 else:
                                                     print 'Delay Already Detected For %s' % friend.forename
-                                    print 'Delay Already Detected For %s' % user.forename
+                                    else:
+                                        print 'Delay Already Detected For %s' % user.forename
 
 
                             else:
@@ -163,7 +164,8 @@ class Command(BaseCommand):
                                                     )
                                                 else:
                                                     print 'Delay Already Detected For %s' % friend.forename
-                                    print 'Delay Already Detected For %s' % user.forename
+                                    else:
+                                        print 'Delay Already Detected For %s' % user.forename
 
                 delay_found = delay_found_arrive and delay_found_depart
             if not already_claimed_today:
