@@ -111,6 +111,7 @@ class LoginForm(forms.Form):
         FormActions(Submit('register', value="register", css_class="btn-danger")),
     )
 
+
 class AnswerCaptchaForm(forms.Form):
     imageUrl = forms.CharField(label='imageUrl')
     encoded_response = forms.CharField(label='encoded_response')
@@ -134,6 +135,15 @@ class AnswerCaptchaForm(forms.Form):
         Field('journeyId', css_class='input-sm', type="hidden"),
         FormActions(Submit('submit',  value="submit", css_class="btn-primary")),
     )
+
+    def clean(self):
+        cleaned_data = super(AnswerCaptchaForm, self).clean()
+        msg = "Captcha answer must be 5 characters long"
+        if "answer" in cleaned_data:
+            if len(cleaned_data['answer']) != 5:
+                raise forms.ValidationError(
+                    msg
+                )
 
 
 class DelayForm(forms.ModelForm):
