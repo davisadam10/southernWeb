@@ -99,28 +99,15 @@ def index(request):
 
             if form.is_valid():
                 delay = form.save(user=request.user, journey=journey[0])
-                already_claimed = utils.already_claimed(user_model, delay.date, doMaxCheck=True)
-                if already_claimed:
-                    delay.delete()
-                    return render_to_response('alreadyClaimed.html', {'redirect': '/'})
-
-                encodedResponse, imageUrl = utils.get_browser_and_captcha(user_model.username)
                 ticket = utils.get_best_valid_ticket(user_model, delay.date)
+
                 if not ticket:
                     delay.delete()
                     return HttpResponseRedirect('/noTicket')
 
                 delay.save()
 
-                delayArgs = {}
-                delayArgs['encoded_response'] = encodedResponse
-                delayArgs['imageUrl'] = imageUrl
-                delayArgs['username'] = user_model.username
-                delayArgs['delayId'] = delay.id
-                delayArgs['journeyId'] = journey[0].id
-
-                request.session['delayData'] = delayArgs
-                return HttpResponseRedirect('/answerCaptcha')
+                return render_to_response('delayLogged.html', {'redirect': '/'})
 
             else:
                 args['form'] = form
