@@ -13,6 +13,8 @@ class Command(BaseCommand):
         time_now = datetime.now().time()
         train_end_time = time(23, 59)
         train_start_time = time(5, 00)
+        # Temp disabled the find delays untill I can tag the delay as auto found so we can distinguish between these and manual entries
+        return
 
         if not train_end_time > time_now > train_start_time:
             print 'Trains have stopped running'
