@@ -12,5 +12,5 @@ class Command(BaseCommand):
         for delay in delays:
             if (todays_date - delay.date).days > 28:
                 delay.expired = True
-                delay.save()
+                delay.delete()
                 print 'Expired'
