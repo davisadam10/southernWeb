@@ -4,6 +4,7 @@ Utils for delay repay
 """
 __author__ = 'adam'
 from datetime import datetime
+from datetime import timedelta
 import mechanize
 import base64
 import delayRepay.models as models
@@ -275,11 +276,18 @@ def clear_unclaimable_delays(user):
     claimed_delays = models.Delay.objects.filter(claimed=True, delayRepayUser=user)
     claimed_dates = [delay.date for delay in claimed_delays]
     unclaimed_delays = models.Delay.objects.filter(delayRepayUser=user)
+    delayCutoff = datetime.now() + timedelta(-28)
     for delay in unclaimed_delays:
         if delay.date in claimed_dates:
             if already_claimed(user, delay.date):
                 delay.claimable = False
-                delay.save()
+                delay.delete()
+                continue
+
+        if delay.date < delayCutoff:
+            delay.delete()
+
+        
 
 
 def already_claimed(user_model, delay_date, doMaxCheck=False):
