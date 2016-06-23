@@ -8,12 +8,9 @@ from datetime import datetime, timedelta
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        delays = models.Delay.objects.filter(expired=False)
-        todays_date = datetime.now().date()
+        delays = models.Delay.objects.all()
         delayCutoff = datetime.now().date() + timedelta(-28)
         for delay in delays:
             if delay.date < delayCutoff:
-                print "Deleting Delay"
-                delay.expired = True
                 delay.delete()
-                print 'Expired'
+                
