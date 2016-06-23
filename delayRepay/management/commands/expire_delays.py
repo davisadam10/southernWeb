@@ -12,9 +12,8 @@ class Command(BaseCommand):
         todays_date = datetime.now().date()
         delayCutoff = datetime.now().date() + timedelta(-28)
         for delay in delays:
-            print delay.date, type(delay.date)
-            print delayCutoff, type(delayCutoff)
             if delay.date < delayCutoff:
+                print "Deleting Delay"
                 delay.expired = True
                 delay.delete()
                 print 'Expired'
