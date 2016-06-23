@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         delays = models.Delay.objects.filter(expired=False)
         todays_date = datetime.now().date()
-        delayCutoff = datetime.now() + timedelta(-28)
+        delayCutoff = datetime.now().date() + timedelta(-28)
         for delay in delays:
             print delay.date, type(delay.date)
             print delayCutoff, type(delayCutoff)
