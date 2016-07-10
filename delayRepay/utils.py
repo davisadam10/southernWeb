@@ -284,7 +284,7 @@ def clear_unclaimable_delays(user):
                 delay.delete()
                 continue
 
-        if delay.date < delayCutoff:
+        if delay.date < delayCutoff.date():
             delay.delete()
 
         
