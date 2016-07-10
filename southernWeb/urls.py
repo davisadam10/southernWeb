@@ -37,6 +37,9 @@ urlpatterns = patterns(
     url(r'^rest/friends/$', restViews.FriendsView.as_view(), name='FriendsView'),
     url(r'^rest/unclaimedDelays/$', restViews.UnclaimedDelaysView.as_view(), name='UnclaimedDelays'),
     url(r'^rest/journeys/$', restViews.JourneysView.as_view(), name='Journeys'),
+    url(r'^rest/best_ticket/$', restViews.BestAvailableTicket.as_view(), name='BestTicket'),
+    url(r'^rest/set_delay_claimed/$', restViews.SetDelayAsClaimed.as_view(), name='SetDelayClaimed'),
+
 
 
 
