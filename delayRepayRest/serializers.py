@@ -41,6 +41,7 @@ class DelaySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Delay
         fields = (
+            'id',
             'claimed',
             'date',
             'delay',
@@ -49,5 +50,21 @@ class DelaySerializer(serializers.HyperlinkedModelSerializer):
             'startTime',
             'endTime',
             'journey',
+        )
+
+
+class TicketSerializer(serializers.HyperlinkedModelSerializer):
+    delayRepayUser = UserDataSerializer()
+
+    class Meta:
+        model = models.Ticket
+        fields = (
+            'ticket_type',
+            'cost',
+            'ticket_photo',
+            'ticket_start_date',
+            'ticket_expiry_date',
+            'delayRepayUser'
+
         )
 
