@@ -9,8 +9,8 @@ import mechanize
 import base64
 import delayRepay.models as models
 from bs4 import BeautifulSoup
-from django.core.files.storage import default_storage as storage
 from PIL import Image
+from django.core.files.storage import default_storage as storage
 
 DEBUG = False
 GLOBAL_BROWSER = {}

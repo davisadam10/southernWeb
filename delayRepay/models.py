@@ -123,6 +123,8 @@ class Ticket(models.Model):
     """
     ticket_type = models.CharField(max_length=200)
     cost = models.CharField(max_length=200)
+    ticketNumPart1 = models.CharField(max_length=200, default='00000')
+    ticketNumPart2 = models.CharField(max_length=200, default='00000')
     ticket_photo = models.ImageField(upload_to=get_image_path, default='pic_folder/None/no-img.jpg')
 
     ticket_start_date = models.DateField()

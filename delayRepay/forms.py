@@ -356,6 +356,8 @@ class TicketForm(forms.ModelForm):
 
     ticket_type = forms.ChoiceField(choices=valid_ticket_types)
     cost = forms.CharField(required=True)
+    ticketNumPart1 = forms.CharField(required=True, max_length=10, min_length=10)
+    ticketNumPart2 = forms.CharField(required=True, max_length=5, min_length=5)
     ticket_start_date = forms.DateField(required=True)
     ticket_expiry_date = forms.DateField(required=True)
     ticket_photo = forms.ImageField(required=True)
@@ -368,7 +370,8 @@ class TicketForm(forms.ModelForm):
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
         Field('ticket_type'),
-        Field('cost'),
+        Field('ticketNumPart1'),
+        Field('ticketNumPart2'),
         Field('ticket_start_date', css_class='datepicker', id='datepicker'),
         Field('ticket_expiry_date', css_class='datepicker', id='datepicker2'),
         Field('ticket_photo'),
@@ -383,6 +386,8 @@ class TicketForm(forms.ModelForm):
         ticket = super(TicketForm, self).save(commit=False)
         ticket.ticket_type = self.cleaned_data['ticket_type']
         ticket.cost = self.cleaned_data['cost']
+        ticket.ticketNumPart1 = self.cleaned_data['ticketNumPart1']
+        ticket.ticketNumPart2 = self.cleaned_data['ticketNumPart2']
         ticket.ticket_start_date = self.cleaned_data['ticket_start_date']
         ticket.ticket_expiry_date = self.cleaned_data['ticket_expiry_date']
         user_models = UserData.objects.filter(username=user)
