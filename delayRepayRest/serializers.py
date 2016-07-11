@@ -61,6 +61,8 @@ class TicketSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'ticket_type',
             'cost',
+            'ticketNumPart1',
+            'ticketNumPart2',
             'ticket_photo',
             'ticket_start_date',
             'ticket_expiry_date',
