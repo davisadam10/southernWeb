@@ -370,6 +370,7 @@ class TicketForm(forms.ModelForm):
     helper.field_class = 'col-sm-4'
     helper.layout = Layout(
         Field('ticket_type'),
+        Field('cost'),
         Field('ticketNumPart1'),
         Field('ticketNumPart2'),
         Field('ticket_start_date', css_class='datepicker', id='datepicker'),
