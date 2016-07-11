@@ -356,8 +356,8 @@ class TicketForm(forms.ModelForm):
 
     ticket_type = forms.ChoiceField(choices=valid_ticket_types)
     cost = forms.CharField(required=True)
-    ticketNumPart1 = forms.CharField(required=True, max_length=10, min_length=10)
-    ticketNumPart2 = forms.CharField(required=True, max_length=5, min_length=5)
+    ticketNumPart1 = forms.CharField(required=True, max_length=5, min_length=5)
+    ticketNumPart2 = forms.CharField(required=True, max_length=10, min_length=10)
     ticket_start_date = forms.DateField(required=True)
     ticket_expiry_date = forms.DateField(required=True)
     ticket_photo = forms.ImageField(required=True)
