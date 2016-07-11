@@ -40,10 +40,19 @@ class JourneysView(APIView):
 
 
 class UnclaimedDelaysView(APIView):
+    """
+    Returns a list of unclaimed delays where no other delays have been claimed on that date
+    """
     def get(self, request, format=None):
         user = utils.get_user_model_from_request(request)
 
-        delays = models.Delay.objects.filter(delayRepayUser=user, claimed=False, expired=False, claimable=True)
+        allUnclaimedDelays = models.Delay.objects.filter(delayRepayUser=user, claimed=False, expired=False, claimable=True)
+        delays = []
+        for delay in allUnclaimedDelays:
+            claimed = [claimedDelay for claimedDelay in models.Delay.objects.filter(delayRepayUser=user, date=delay.date, claimed=True)]
+            if not claimed:
+                delays.append(delay)
+
         serializer = DelaySerializer(delays, many=True, context={'request': request})
         return Response(serializer.data)
 
