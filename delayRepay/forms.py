@@ -157,7 +157,8 @@ class DelayForm(forms.ModelForm):
         ('Train cancelled', 'Train cancelled'),
         ('Delayed on route', 'Delayed on route'),
         ('Delayed departure', 'Delayed departure'),
-        ('Missed connection', 'Missed connection')
+        ('Missed connection', 'Missed connection'),
+        ('Other', 'Other')
     ]
 
     def __init__(self, *args, **kwargs):
@@ -174,6 +175,7 @@ class DelayForm(forms.ModelForm):
     journey_date = forms.DateField()
     start_time = forms.TimeField()
     end_time = forms.TimeField()
+    delay_details = forms.CharField(required=False)
 
     helper = FormHelper()
     helper.form_method = 'POST'
@@ -188,6 +190,7 @@ class DelayForm(forms.ModelForm):
         Field('journey_date', css_class='datepicker', id='datepicker'),
         Field('start_time', css_class='input-sm', id='timepicker'),
         Field('end_time', css_class='input-sm', id='timepicker2'),
+        Field('delay_details', css_class='input-sm'),
         FormActions(Submit('Submit Delay', 'Submit Delay', css_class='btn-primary')),
     )
 
@@ -203,6 +206,7 @@ class DelayForm(forms.ModelForm):
         delay.startTime = self.cleaned_data['start_time']
         delay.endTime = self.cleaned_data['end_time']
         delay.journey = journey
+        delay.delay_details = self.cleaned_data['delay_details']
         user_models = UserData.objects.filter(username=user)
         delay.delayRepayUser = user_models[0]
         if commit:

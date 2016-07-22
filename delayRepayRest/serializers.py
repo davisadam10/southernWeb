@@ -47,6 +47,7 @@ class DelaySerializer(serializers.HyperlinkedModelSerializer):
             'delay',
             'delayRepayUser',
             'delay_reason',
+            'delay_details',
             'startTime',
             'endTime',
             'journey',

@@ -49,6 +49,7 @@ class Delay(models.Model):
     endTime = models.TimeField()
     delay = models.CharField(max_length=200)
     delay_reason = models.CharField(max_length=200)
+    delay_details = models.CharField(max_length=200, default='')
     delayRepayUser = models.ForeignKey(UserData)
     claimed = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)
