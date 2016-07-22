@@ -27,7 +27,7 @@ class DelayAdmin(admin.ModelAdmin):
     list_display = (
         "delay", "delay_reason", "date", "startTime",
         "endTime", 'delayRepayUser', 'claimed', 'expired',
-        'journey', 'claimable', 'delay_reason'
+        'journey', 'claimable', 'delay_details'
     )
 
 
