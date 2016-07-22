@@ -227,6 +227,17 @@ class DelayForm(forms.ModelForm):
                     msg
                 )
 
+        if cleaned_data['delay_reason'] == 'Other':
+            if cleaned_data['delay_details'] == '':
+                raise forms.ValidationError(
+                    "Need to complete the delay details when doing Other"
+                )
+        else:
+            if cleaned_data['delay_details'] != '':
+                raise forms.ValidationError(
+                    "Do NOT complete the delay details when doing Other"
+                )
+
 
 class JourneyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
