@@ -49,8 +49,8 @@ class UnclaimedDelaysView(APIView):
         allUnclaimedDelays = models.Delay.objects.filter(delayRepayUser=user, claimed=False, expired=False, claimable=True)
         delays = []
         for delay in allUnclaimedDelays:
-            claimed = [claimedDelay for claimedDelay in models.Delay.objects.filter(delayRepayUser=user, date=delay.date, claimed=True)]
-            if not claimed:
+            alreadyClaimed = utils.already_claimed(user, delay.date, doMaxCheck=True)
+            if not alreadyClaimed:
                 delays.append(delay)
 
         serializer = DelaySerializer(delays, many=True, context={'request': request})
